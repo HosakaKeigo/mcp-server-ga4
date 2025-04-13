@@ -1,8 +1,7 @@
 # MCP Server for Google Analytics 4
 
 >[!NOTE]
->This is a work in progress. The server is not yet fully functional and is under active development.
-
+>This is a work in progress. The server is not yet fully tested. Use at your own discretion.
 
 ## Key Features
 
