@@ -56,7 +56,7 @@ export const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
 export const pageViewsSchema = z.object({
   startDate: dateSchema,
   endDate: dateSchema,
-  dimensions: z.array(z.string()).optional().default(['page']),
+  dimensions: z.array(z.string()).optional().default(['hostName']),
 });
 
 /**

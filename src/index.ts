@@ -45,9 +45,9 @@ async function main() {
       {
         startDate: z.string().describe('Start date in YYYY-MM-DD format'),
         endDate: z.string().describe('End date in YYYY-MM-DD format'),
-        dimensions: z.array(z.string()).describe('Dimensions to group by (e.g., page, country)').optional().default(['page']),
+        dimensions: z.array(z.string()).describe('Dimensions to group by (e.g., page, country)').optional().default(['pageLocation']),
       },
-      async ({ startDate, endDate, dimensions = ['pageLocation'] }) => {
+      async ({ startDate, endDate, dimensions = ['hostName'] }) => {
         try {
           console.error(`Executing get-page-views with params:`, { startDate, endDate, dimensions });
 

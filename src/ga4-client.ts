@@ -60,15 +60,15 @@ export class GA4Client {
   /**
    * ページビュー指標取得
    */
-  async getPageViews(startDate: string, endDate: string, dimensions: string[] = ['page']) {
+  async getPageViews(startDate: string, endDate: string, dimensions: string[] = ['hostName']) {
     console.error(`Getting page views from ${startDate} to ${endDate} with dimensions:`, dimensions);
 
     // dimensions配列の各要素をチェック
     const validDimensions = dimensions.filter(dim => dim && typeof dim === 'string');
 
     if (validDimensions.length === 0) {
-      console.error('No valid dimensions provided, using default "pageLocation" dimension');
-      validDimensions.push('pageLocation');
+      console.error('No valid dimensions provided, using default "hostName" dimension');
+      validDimensions.push('hostName');
     }
 
     return this.runReport({
