@@ -10,10 +10,10 @@ export function formatGAResponse(response: any) {
 
   const dimensionHeaders = response.dimensionHeaders?.map((header: any) => header.name) || [];
   const metricHeaders = response.metricHeaders?.map((header: any) => header.name) || [];
-  
+
   const rows = response.rows.map((row: any) => {
     const result: Record<string, any> = {};
-    
+
     // ディメンションの処理
     if (row.dimensionValues) {
       row.dimensionValues.forEach((value: any, index: number) => {
@@ -22,7 +22,7 @@ export function formatGAResponse(response: any) {
         }
       });
     }
-    
+
     // メトリクスの処理
     if (row.metricValues) {
       row.metricValues.forEach((value: any, index: number) => {
@@ -31,7 +31,7 @@ export function formatGAResponse(response: any) {
         }
       });
     }
-    
+
     return result;
   });
 

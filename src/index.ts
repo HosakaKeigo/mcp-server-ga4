@@ -2,12 +2,12 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { GA4Client } from './ga4-client.js';
-import { 
-  formatGAResponse, 
-  pageViewsSchema, 
-  activeUsersSchema, 
-  eventsSchema, 
-  userBehaviorSchema 
+import {
+  formatGAResponse,
+  pageViewsSchema,
+  activeUsersSchema,
+  eventsSchema,
+  userBehaviorSchema
 } from './utils.js';
 
 // サーバー情報
@@ -51,14 +51,14 @@ async function main() {
         try {
           // 入力パラメータの検証
           const validParams = pageViewsSchema.parse({ startDate, endDate, dimensions });
-          
+
           // GA4からデータ取得
           const response = await ga4Client.getPageViews(
-            validParams.startDate, 
-            validParams.endDate, 
+            validParams.startDate,
+            validParams.endDate,
             validParams.dimensions
           );
-          
+
           // レスポンスのフォーマット
           const formattedResponse = formatGAResponse(response);
 
@@ -98,12 +98,12 @@ async function main() {
       async ({ startDate, endDate }) => {
         try {
           const validParams = activeUsersSchema.parse({ startDate, endDate });
-          
+
           const response = await ga4Client.getActiveUsers(
-            validParams.startDate, 
+            validParams.startDate,
             validParams.endDate
           );
-          
+
           const formattedResponse = formatGAResponse(response);
 
           return {
@@ -143,13 +143,13 @@ async function main() {
       async ({ startDate, endDate, eventName }) => {
         try {
           const validParams = eventsSchema.parse({ startDate, endDate, eventName });
-          
+
           const response = await ga4Client.getEvents(
-            validParams.startDate, 
-            validParams.endDate, 
+            validParams.startDate,
+            validParams.endDate,
             validParams.eventName
           );
-          
+
           const formattedResponse = formatGAResponse(response);
 
           return {
@@ -188,12 +188,12 @@ async function main() {
       async ({ startDate, endDate }) => {
         try {
           const validParams = userBehaviorSchema.parse({ startDate, endDate });
-          
+
           const response = await ga4Client.getUserBehavior(
-            validParams.startDate, 
+            validParams.startDate,
             validParams.endDate
           );
-          
+
           const formattedResponse = formatGAResponse(response);
 
           return {
@@ -281,20 +281,19 @@ async function main() {
       'create-report',
       {
         title: z.string().describe('Report title'),
-        metrics: z.array(z.string()).describe('Metrics to include in the report'),
+        metrics: z.string().describe('Comma-separated metrics to include in the report'),
         startDate: z.string().describe('Start date in YYYY-MM-DD format'),
         endDate: z.string().describe('End date in YYYY-MM-DD format'),
         audienceType: z.string().describe('Target audience for the report'),
       },
       ({ title, metrics, startDate, endDate, audienceType }) => {
-        const metricsText = metrics.join(', ');
         return {
           messages: [
             {
               role: 'user',
               content: {
                 type: 'text',
-                text: `Please create a comprehensive ${audienceType}-friendly Google Analytics report titled "${title}" covering the period from ${startDate} to ${endDate}. The report should focus on the following metrics: ${metricsText}. Include an executive summary, detailed analysis of each metric, visualizations, and actionable recommendations.`,
+                text: `Please create a comprehensive ${audienceType}-friendly Google Analytics report titled "${title}" covering the period from ${startDate} to ${endDate}. The report should focus on the following metrics: ${metrics}. Include an executive summary, detailed analysis of each metric, visualizations, and actionable recommendations.`,
               },
             },
           ],
