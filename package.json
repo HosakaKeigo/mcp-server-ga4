@@ -17,8 +17,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@google-analytics/data": "^4.0.0",
-    "@modelcontextprotocol/sdk": "^0.7.0",
+    "@dotenvx/dotenvx": "^1.39.1",
+    "@google-analytics/data": "^5.1.0",
+    "@modelcontextprotocol/sdk": "^1.9.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
