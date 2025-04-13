@@ -1,4 +1,7 @@
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
+import dotenvx from '@dotenvx/dotenvx';
+
+dotenvx.config();
 
 /**
  * GA4データクライアントの初期化と管理を行うクラス
@@ -37,7 +40,7 @@ export class GA4Client {
         ...config,
         property: `properties/${this.propertyId}`,
       };
-      
+
       const [response] = await this.client.runReport(formattedConfig);
       return response;
     } catch (error) {
