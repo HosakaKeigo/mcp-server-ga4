@@ -372,4 +372,4 @@ export const GA4_DIMENSIONS = `| API 名                           | 説明 |
 | week                             | イベント記録週（01～53） |
 | year                             | イベント記録年（4桁） |
 | yearMonth                        | 年と月の組合せ（例: 202212） |
-| yearWeek                         | 年と週の組合せ（例: 202253） |`
+| yearWeek                         | 年と週の組合せ（例: 202253） |`;
