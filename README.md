@@ -1,70 +1,95 @@
 # MCP Server for Google Analytics 4
 
-Model Context Protocol (MCP) server for integrating with Google Analytics 4 data.
+>[!NOTE]
+>This is a work in progress. The server is not yet fully functional and is under active development.
 
-## Features
 
-This server provides the following MCP capabilities:
+## Key Features
+
+This server provides the following MCP functionalities:
 
 ### Tools
-- `get-page-views`: Get page view metrics for a specific date range
-- `get-active-users`: Get active users metrics for a specific date range
-- `get-events`: Get event metrics for a specific date range
-- `get-user-behavior`: Get user behavior metrics like session duration and bounce rate
 
-All tools support pagination with `limit` and `offset` parameters to handle large result sets.
+*   `get-page-views`: Fetches page view metrics for a specified date range.
+*   `get-active-users`: Fetches active user metrics for a specified date range.
+*   `get-events`: Fetches event metrics for a specified date range.
+*   `get-user-behavior`: Fetches user behavior metrics such as session duration and bounce rate.
 
 ### Resources
-- `ga4://property-info`: GA4 property metadata
-- `ga4://dimensions`: Complete list of available GA4 dimensions with descriptions
-- `ga4://filters-help`: Help documentation on using GA4 filters
+
+*   `ga4://property-info`: Metadata for the GA4 property.
+*   `ga4://dimensions`: List of available GA4 dimensions.
+*   `ga4://filters-help`: Help documentation on using GA4 filters.
 
 ### Prompts
-- `analyze-data`: Data analysis assistant prompt
-- `create-report`: Report generation template
-- `select-dimensions`: Assistance with selecting appropriate GA4 dimensions for specific analysis goals
+
+*   `analyze-data`: Data analysis assistant.
+*   `create-report`: Report generation template.
+*   `select-dimensions`: Assists in selecting appropriate dimensions for analysis goals.
 
 ## Setup
 
 ### Prerequisites
 
-1. A Google Analytics 4 property
-2. A Google Cloud service account with access to the GA4 API
-3. Node.js 18 or higher
+*   A Google Analytics 4 property.
+*   A Google Cloud service account with access to the GA4 API.
+*   Node.js 20 or higher.
+*   pnpm package manager.
 
 ### Installation
 
-1. Clone this repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create `.env` file from example:
-   ```bash
-   cp .env.example .env
-   ```
-4. Configure your environment variables in `.env`:
-   ```
-   GOOGLE_CLIENT_EMAIL=your-service-account-email@example.iam.gserviceaccount.com
-   GOOGLE_PRIVATE_KEY=your-private-key
-   GA_PROPERTY_ID=your-ga4-property-id
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/mcp-server-ga4.git
+cd mcp-server-ga4
+
+# Install dependencies using pnpm
+pnpm install
+
+# Create the .env file
+cp .env.example .env
+
+# Edit the .env file and set your credentials
+# GOOGLE_CLIENT_EMAIL=your-service-account-email@example.iam.gserviceaccount.com
+# GOOGLE_PRIVATE_KEY=your-private-key
+# GA_PROPERTY_ID=your-ga4-property-id
+```
 
 ### Build and Run
 
-Build the server:
 ```bash
-npm run build
+# Build the server
+pnpm run build
+
+# Run the server
+pnpm start
 ```
 
-Run the server:
-```bash
-npm start
+## Usage
+
+### Integration with Claude for Desktop
+
+Add the following to your `claude_desktop_config.json` file:
+
+```json
+{
+  "mcpServers": {
+    "ga4": {
+      "command": "node",
+      "args": ["/path/to/mcp-server-ga4/dist/index.js"],
+      "env": {
+        "GOOGLE_CLIENT_EMAIL": "your-service-account-email@example.iam.gserviceaccount.com",
+        "GOOGLE_PRIVATE_KEY": "your-private-key",
+        "GA_PROPERTY_ID": "your-ga4-property-id"
+      }
+    }
+  }
+}
 ```
 
-## Filtering
+### Filtering
 
-All data retrieval tools support filtering with the optional `filter` parameter. Filters allow you to narrow down results based on specific criteria:
+You can use the `filter` parameter with all tools to narrow down results:
 
 ```json
 {
@@ -84,73 +109,39 @@ All data retrieval tools support filtering with the optional `filter` parameter.
 }
 ```
 
-Filtering supports:
+### Pagination
 
-- Multiple dimension conditions
-- Multiple metric conditions 
-- String filters (equals, contains, begins/ends with, regex)
-- Numeric filters (equals, less/greater than, between)
-- Combining conditions with AND/OR operators
+When dealing with large amounts of data, use the `limit` and `offset` parameters:
 
-See the `ga4://filters-help` resource for comprehensive documentation and examples.
-
-## Pagination
-
-All data retrieval tools support pagination parameters:
-
-- `limit`: Maximum number of results to return (default: 50, max: 1000)
-- `offset`: Number of results to skip (for pagination)
-
-Example:
 ```
-// First page (results 1-50)
+// First page (items 1-50)
 get-page-views with limit=50, offset=0
 
-// Second page (results 51-100)
+// Second page (items 51-100)
 get-page-views with limit=50, offset=50
 ```
 
-The response includes pagination metadata:
-```json
-{
-  "data": [...],
-  "totalCount": 150,
-  "limit": 50,
-  "offset": 0,
-  "hasMore": true,
-  "pageCount": 3,
-  "currentPage": 1
-}
-```
+## Troubleshooting
 
-## Using with Claude for Desktop
-
-Add this server to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "ga4": {
-      "command": "node",
-      "args": ["/path/to/mcp-server-ga4/dist/index.js"],
-      "env": {
-        "GOOGLE_CLIENT_EMAIL": "your-service-account-email@example.iam.gserviceaccount.com",
-        "GOOGLE_PRIVATE_KEY": "your-private-key",
-        "GA_PROPERTY_ID": "your-ga4-property-id"
-      }
-    }
-  }
-}
-```
+*   **Authentication errors**: Check your service account key and permissions.
+*   **No data showing**: Verify the date range and property ID are correct.
+*   **Connection errors**: Check your network settings and firewall.
 
 ## Testing
 
-You can test this server with the MCP Inspector:
+Test using the MCP Inspector:
 
 ```bash
-npx @modelcontextprotocol/inspector node /path/to/mcp-server-ga4/dist/index.js
+pnpm dlx @modelcontextprotocol/inspector node /path/to/mcp-server-ga4/dist/index.js
 ```
+*(Note: `pnpm dlx` is the equivalent of `npx` for executing packages)*
 
 ## License
 
 MIT
+
+## Thanks
+- https://github.com/lapras-inc/lapras-mcp-server/tree/main
+  - Owes to a class based structure of mcp implementation.
+- https://github.com/ruchernchong/mcp-server-google-analytics
+  - Relies on basic implementation of Google Analytics API.
