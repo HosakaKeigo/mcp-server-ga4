@@ -23,12 +23,18 @@ export class GA4Client {
       throw new Error('Missing required environment variables for GA4 client');
     }
 
-    this.client = new BetaAnalyticsDataClient({
-      credentials: {
-        client_email: clientEmail,
-        private_key: privateKey,
-      },
-    });
+    try {
+      this.client = new BetaAnalyticsDataClient({
+        credentials: {
+          client_email: clientEmail,
+          private_key: privateKey,
+        },
+      });
+      console.error('GA4 client initialized successfully with property ID:', this.propertyId);
+    } catch (error) {
+      console.error('Failed to initialize GA4 client:', error);
+      throw error;
+    }
   }
 
   /**
@@ -40,6 +46,8 @@ export class GA4Client {
         ...config,
         property: `properties/${this.propertyId}`,
       };
+
+      console.error('Running GA4 report with config:', JSON.stringify(formattedConfig, null, 2));
 
       const [response] = await this.client.runReport(formattedConfig);
       return response;
@@ -53,9 +61,19 @@ export class GA4Client {
    * ページビュー指標取得
    */
   async getPageViews(startDate: string, endDate: string, dimensions: string[] = ['page']) {
+    console.error(`Getting page views from ${startDate} to ${endDate} with dimensions:`, dimensions);
+
+    // dimensions配列の各要素をチェック
+    const validDimensions = dimensions.filter(dim => dim && typeof dim === 'string');
+
+    if (validDimensions.length === 0) {
+      console.error('No valid dimensions provided, using default "pageLocation" dimension');
+      validDimensions.push('pageLocation');
+    }
+
     return this.runReport({
       dateRanges: [{ startDate, endDate }],
-      dimensions: dimensions.map((dimension) => ({ name: dimension })),
+      dimensions: validDimensions.map((dimension) => ({ name: dimension })),
       metrics: [{ name: 'screenPageViews' }],
     });
   }

@@ -45,10 +45,12 @@ async function main() {
       {
         startDate: z.string().describe('Start date in YYYY-MM-DD format'),
         endDate: z.string().describe('End date in YYYY-MM-DD format'),
-        dimensions: z.array(z.string()).describe('Dimensions to group by (e.g., page, country)').optional(),
+        dimensions: z.array(z.string()).describe('Dimensions to group by (e.g., page, country)').optional().default(['page']),
       },
-      async ({ startDate, endDate, dimensions }) => {
+      async ({ startDate, endDate, dimensions = ['pageLocation'] }) => {
         try {
+          console.error(`Executing get-page-views with params:`, { startDate, endDate, dimensions });
+
           // 入力パラメータの検証
           const validParams = pageViewsSchema.parse({ startDate, endDate, dimensions });
 
@@ -71,11 +73,23 @@ async function main() {
             ],
           };
         } catch (error: any) {
+          console.error('GA4 page views error:', error);
+
+          // エラーオブジェクトの詳細情報を取得
+          const errorDetails = {
+            message: error.message,
+            stack: error.stack,
+            details: error.details || 'No details',
+            code: error.code,
+            status: error.status,
+            metadata: error.metadata ? JSON.stringify(error.metadata) : 'No metadata'
+          };
+
           return {
             content: [
               {
                 type: 'text',
-                text: `Error: ${error.message}`,
+                text: `Error: ${error.message}\nDetails: ${JSON.stringify(errorDetails, null, 2)}`,
               },
             ],
             isError: true,
