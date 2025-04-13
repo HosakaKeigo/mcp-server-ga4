@@ -13,8 +13,8 @@ export function formatGAResponse(response: google.analytics.data.v1beta.IRunRepo
     return { data: [], totalCount: 0, limit, offset };
   }
 
-  const dimensionHeaders = response.dimensionHeaders?.map((header: any) => header.name) || [];
-  const metricHeaders = response.metricHeaders?.map((header: any) => header.name) || [];
+  const dimensionHeaders = response.dimensionHeaders?.map((header) => header.name) || [];
+  const metricHeaders = response.metricHeaders?.map((header) => header.name) || [];
 
   // ページネーションの適用
   const totalCount = response.rows.length;
@@ -22,12 +22,12 @@ export function formatGAResponse(response: google.analytics.data.v1beta.IRunRepo
     ? response.rows.slice(offset, offset + limit)
     : response.rows.slice(offset);
 
-  const rows = paginatedRows.map((row: any) => {
+  const rows = paginatedRows.map((row) => {
     const result: Record<string, any> = {};
 
     // ディメンションの処理
     if (row.dimensionValues) {
-      row.dimensionValues.forEach((value: any, index: number) => {
+      row.dimensionValues.forEach((value, index) => {
         if (dimensionHeaders[index]) {
           result[dimensionHeaders[index]] = value.value;
         }
@@ -36,7 +36,7 @@ export function formatGAResponse(response: google.analytics.data.v1beta.IRunRepo
 
     // メトリクスの処理
     if (row.metricValues) {
-      row.metricValues.forEach((value: any, index: number) => {
+      row.metricValues.forEach((value, index) => {
         if (metricHeaders[index]) {
           result[metricHeaders[index]] = value.value;
         }
