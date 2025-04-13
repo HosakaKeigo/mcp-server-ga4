@@ -1,18 +1,24 @@
 import { z } from 'zod';
+import { IMCPPrompt } from '../types/index.js';
+
+/**
+ * レポート生成プロンプトのスキーマ型
+ */
+const createReportSchema = {
+  title: z.string().describe('Report title'),
+  metrics: z.string().describe('Comma-separated metrics to include in the report'),
+  startDate: z.string().describe('Start date in YYYY-MM-DD format'),
+  endDate: z.string().describe('End date in YYYY-MM-DD format'),
+  audienceType: z.string().describe('Target audience for the report'),
+};
 
 /**
  * レポート生成プロンプト定義
  */
-export function createReportPrompt() {
+export function createReportPrompt(): IMCPPrompt<typeof createReportSchema> {
   return {
     name: 'create-report',
-    schema: {
-      title: z.string().describe('Report title'),
-      metrics: z.string().describe('Comma-separated metrics to include in the report'),
-      startDate: z.string().describe('Start date in YYYY-MM-DD format'),
-      endDate: z.string().describe('End date in YYYY-MM-DD format'),
-      audienceType: z.string().describe('Target audience for the report'),
-    },
+    schema: createReportSchema,
     handler: ({ title, metrics, startDate, endDate, audienceType }) => {
       return {
         messages: [

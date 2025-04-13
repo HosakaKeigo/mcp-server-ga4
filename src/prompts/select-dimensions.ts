@@ -1,15 +1,21 @@
 import { z } from 'zod';
+import { IMCPPrompt } from '../types/index.js';
+
+/**
+ * ディメンション選択プロンプトのスキーマ型
+ */
+const selectDimensionsSchema = {
+  metricType: z.enum(['pageviews', 'users', 'events', 'behavior']).describe('Type of metrics to analyze'),
+  businessGoal: z.string().describe('Business goal for the analysis'),
+};
 
 /**
  * ディメンション選択プロンプト定義
  */
-export function selectDimensionsPrompt() {
+export function selectDimensionsPrompt(): IMCPPrompt<typeof selectDimensionsSchema> {
   return {
     name: 'select-dimensions',
-    schema: {
-      metricType: z.enum(['pageviews', 'users', 'events', 'behavior']).describe('Type of metrics to analyze'),
-      businessGoal: z.string().describe('Business goal for the analysis'),
-    },
+    schema: selectDimensionsSchema,
     handler: ({ metricType, businessGoal }) => {
       return {
         messages: [

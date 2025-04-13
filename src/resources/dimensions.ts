@@ -1,13 +1,14 @@
+import { IMCPResource } from '../types/index.js';
 import { GA4_DIMENSIONS } from './ga4-dimensions.js';
 
 /**
  * GA4ディメンション一覧リソース定義
  */
-export function dimensionsResource() {
+export function dimensionsResource(): IMCPResource {
   return {
     name: 'ga4-dimensions',
     uri: 'ga4://dimensions',
-    handler: async (uri: URL) => {
+    handler: async (uri) => {
       try {
         return {
           contents: [
