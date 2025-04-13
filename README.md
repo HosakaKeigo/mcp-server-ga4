@@ -16,10 +16,12 @@ All tools support pagination with `limit` and `offset` parameters to handle larg
 
 ### Resources
 - `ga4://property-info`: GA4 property metadata
+- `ga4://dimensions`: Complete list of available GA4 dimensions with descriptions
 
 ### Prompts
 - `analyze-data`: Data analysis assistant prompt
 - `create-report`: Report generation template
+- `select-dimensions`: Assistance with selecting appropriate GA4 dimensions for specific analysis goals
 
 ## Setup
 

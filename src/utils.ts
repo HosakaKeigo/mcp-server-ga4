@@ -13,16 +13,16 @@ export function formatGAResponse(response: any, limit?: number, offset: number =
 
   const dimensionHeaders = response.dimensionHeaders?.map((header: any) => header.name) || [];
   const metricHeaders = response.metricHeaders?.map((header: any) => header.name) || [];
-  
+
   // ページネーションの適用
   const totalCount = response.rows.length;
-  const paginatedRows = limit 
+  const paginatedRows = limit
     ? response.rows.slice(offset, offset + limit)
     : response.rows.slice(offset);
-  
+
   const rows = paginatedRows.map((row: any) => {
     const result: Record<string, any> = {};
-    
+
     // ディメンションの処理
     if (row.dimensionValues) {
       row.dimensionValues.forEach((value: any, index: number) => {
@@ -31,7 +31,7 @@ export function formatGAResponse(response: any, limit?: number, offset: number =
         }
       });
     }
-    
+
     // メトリクスの処理
     if (row.metricValues) {
       row.metricValues.forEach((value: any, index: number) => {
@@ -40,7 +40,7 @@ export function formatGAResponse(response: any, limit?: number, offset: number =
         }
       });
     }
-    
+
     return result;
   });
 
