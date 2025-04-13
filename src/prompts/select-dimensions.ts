@@ -1,33 +1,46 @@
 import { z } from 'zod';
-import { IMCPPrompt } from '../types/index.js';
+import { IMCPPrompt, InferZodParams } from '../types/index.js';
 
 /**
- * ディメンション選択プロンプトのスキーマ型
+ * ディメンション選択プロンプトクラス
  */
-const selectDimensionsSchema = {
-  metricType: z.enum(['pageviews', 'users', 'events', 'behavior']).describe('Type of metrics to analyze'),
-  businessGoal: z.string().describe('Business goal for the analysis'),
-};
+export class SelectDimensionsPrompt implements IMCPPrompt {
+  /**
+   * プロンプト名
+   */
+  readonly name = 'select-dimensions';
 
-/**
- * ディメンション選択プロンプト定義
- */
-export function selectDimensionsPrompt(): IMCPPrompt<typeof selectDimensionsSchema> {
-  return {
-    name: 'select-dimensions',
-    schema: selectDimensionsSchema,
-    handler: ({ metricType, businessGoal }) => {
-      return {
-        messages: [
-          {
-            role: 'user',
-            content: {
-              type: 'text',
-              text: `I'm analyzing Google Analytics 4 data focusing on ${metricType} to achieve my business goal of "${businessGoal}". Please help me select the most relevant dimensions to include in my analysis, explaining why each dimension is important and how it relates to my goal. Provide a list of 3-5 recommended dimensions with justification for each.`,
-            },
+  /**
+   * プロンプトスキーマ
+   */
+  readonly schema = {
+    metricType: z.enum(['pageviews', 'users', 'events', 'behavior']).describe('Type of metrics to analyze'),
+    businessGoal: z.string().describe('Business goal for the analysis'),
+  } as const;
+
+  /**
+   * プロンプトハンドラー
+   */
+  handler(args: InferZodParams<typeof this.schema>) {
+    const { metricType, businessGoal } = args;
+    return {
+      messages: [
+        {
+          role: 'user' as const,
+          content: {
+            type: 'text' as const,
+            text: `I'm analyzing Google Analytics 4 data focusing on ${metricType} to achieve my business goal of "${businessGoal}". Please help me select the most relevant dimensions to include in my analysis, explaining why each dimension is important and how it relates to my goal. Provide a list of 3-5 recommended dimensions with justification for each.`,
           },
-        ],
-      };
-    }
-  };
+        },
+      ],
+    };
+  }
+}
+
+/**
+ * ディメンション選択プロンプトの作成関数
+ * @returns ディメンション選択プロンプトインスタンス
+ */
+export function selectDimensionsPrompt(): SelectDimensionsPrompt {
+  return new SelectDimensionsPrompt();
 }

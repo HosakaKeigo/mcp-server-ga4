@@ -6,10 +6,10 @@ import type { z } from "zod";
  */
 export type InferZodParams<T extends Record<string, z.ZodType>> = {
   [K in keyof T]: T[K] extends z.ZodOptional<infer U> ?
-    z.infer<U> | undefined :
-    T[K] extends z.ZodDefault<infer V> ?
-      z.infer<V> :
-      z.infer<T[K]>;
+  z.infer<U> | undefined :
+  T[K] extends z.ZodDefault<infer V> ?
+  z.infer<V> :
+  z.infer<T[K]>;
 };
 
 /**
@@ -88,11 +88,8 @@ export interface IMCPPrompt<TParams extends Record<string, z.ZodType> = Record<s
    */
   handler(args: InferZodParams<TParams>): {
     messages: {
-      role: string;
-      content: {
-        type: string;
-        text: string;
-      };
+      role: "user" | "assistant";
+      content: TextContent;
     }[];
   };
 }
