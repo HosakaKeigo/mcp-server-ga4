@@ -45,24 +45,28 @@ async function main() {
       {
         startDate: z.string().describe('Start date in YYYY-MM-DD format'),
         endDate: z.string().describe('End date in YYYY-MM-DD format'),
-        dimensions: z.array(z.string()).describe('Dimensions to group by (e.g., page, country)').optional().default(['pageLocation']),
+        dimensions: z.array(z.string()).describe('Dimensions to group by (e.g., page, country)').optional().default(['hostName']),
+        limit: z.number().describe('Maximum number of results to return (default: 50)').optional().default(50),
+        offset: z.number().describe('Offset for pagination (default: 0)').optional().default(0),
       },
-      async ({ startDate, endDate, dimensions = ['hostName'] }) => {
+      async ({ startDate, endDate, dimensions = ['hostName'], limit = 50, offset = 0 }) => {
         try {
-          console.error(`Executing get-page-views with params:`, { startDate, endDate, dimensions });
-
+          console.error(`Executing get-page-views with params:`, { startDate, endDate, dimensions, limit, offset });
+          
           // 入力パラメータの検証
-          const validParams = pageViewsSchema.parse({ startDate, endDate, dimensions });
-
+          const validParams = pageViewsSchema.parse({ startDate, endDate, dimensions, limit, offset });
+          
           // GA4からデータ取得
           const response = await ga4Client.getPageViews(
-            validParams.startDate,
-            validParams.endDate,
-            validParams.dimensions
+            validParams.startDate, 
+            validParams.endDate, 
+            validParams.dimensions,
+            validParams.limit,
+            validParams.offset
           );
-
-          // レスポンスのフォーマット
-          const formattedResponse = formatGAResponse(response);
+          
+          // レスポンスのフォーマット - クライアントサイドでページネーション適用
+          const formattedResponse = formatGAResponse(response, validParams.limit, validParams.offset);
 
           return {
             content: [
@@ -74,7 +78,7 @@ async function main() {
           };
         } catch (error: any) {
           console.error('GA4 page views error:', error);
-
+          
           // エラーオブジェクトの詳細情報を取得
           const errorDetails = {
             message: error.message,
@@ -84,7 +88,7 @@ async function main() {
             status: error.status,
             metadata: error.metadata ? JSON.stringify(error.metadata) : 'No metadata'
           };
-
+          
           return {
             content: [
               {
@@ -108,17 +112,21 @@ async function main() {
       {
         startDate: z.string().describe('Start date in YYYY-MM-DD format'),
         endDate: z.string().describe('End date in YYYY-MM-DD format'),
+        limit: z.number().describe('Maximum number of results to return (default: 50)').optional().default(50),
+        offset: z.number().describe('Offset for pagination (default: 0)').optional().default(0),
       },
-      async ({ startDate, endDate }) => {
+      async ({ startDate, endDate, limit = 50, offset = 0 }) => {
         try {
-          const validParams = activeUsersSchema.parse({ startDate, endDate });
-
+          const validParams = activeUsersSchema.parse({ startDate, endDate, limit, offset });
+          
           const response = await ga4Client.getActiveUsers(
-            validParams.startDate,
-            validParams.endDate
+            validParams.startDate, 
+            validParams.endDate,
+            validParams.limit,
+            validParams.offset
           );
-
-          const formattedResponse = formatGAResponse(response);
+          
+          const formattedResponse = formatGAResponse(response, validParams.limit, validParams.offset);
 
           return {
             content: [
@@ -129,11 +137,21 @@ async function main() {
             ],
           };
         } catch (error: any) {
+          console.error('GA4 active users error:', error);
+          
+          const errorDetails = {
+            message: error.message,
+            stack: error.stack,
+            details: error.details || 'No details',
+            code: error.code,
+            status: error.status,
+          };
+          
           return {
             content: [
               {
                 type: 'text',
-                text: `Error: ${error.message}`,
+                text: `Error: ${error.message}\nDetails: ${JSON.stringify(errorDetails, null, 2)}`,
               },
             ],
             isError: true,
@@ -153,18 +171,22 @@ async function main() {
         startDate: z.string().describe('Start date in YYYY-MM-DD format'),
         endDate: z.string().describe('End date in YYYY-MM-DD format'),
         eventName: z.string().describe('Specific event name to filter by (optional)').optional(),
+        limit: z.number().describe('Maximum number of results to return (default: 50)').optional().default(50),
+        offset: z.number().describe('Offset for pagination (default: 0)').optional().default(0),
       },
-      async ({ startDate, endDate, eventName }) => {
+      async ({ startDate, endDate, eventName, limit = 50, offset = 0 }) => {
         try {
-          const validParams = eventsSchema.parse({ startDate, endDate, eventName });
-
+          const validParams = eventsSchema.parse({ startDate, endDate, eventName, limit, offset });
+          
           const response = await ga4Client.getEvents(
-            validParams.startDate,
-            validParams.endDate,
-            validParams.eventName
+            validParams.startDate, 
+            validParams.endDate, 
+            validParams.eventName,
+            validParams.limit,
+            validParams.offset
           );
-
-          const formattedResponse = formatGAResponse(response);
+          
+          const formattedResponse = formatGAResponse(response, validParams.limit, validParams.offset);
 
           return {
             content: [
@@ -175,11 +197,21 @@ async function main() {
             ],
           };
         } catch (error: any) {
+          console.error('GA4 events error:', error);
+          
+          const errorDetails = {
+            message: error.message,
+            stack: error.stack,
+            details: error.details || 'No details',
+            code: error.code,
+            status: error.status,
+          };
+          
           return {
             content: [
               {
                 type: 'text',
-                text: `Error: ${error.message}`,
+                text: `Error: ${error.message}\nDetails: ${JSON.stringify(errorDetails, null, 2)}`,
               },
             ],
             isError: true,
@@ -198,17 +230,21 @@ async function main() {
       {
         startDate: z.string().describe('Start date in YYYY-MM-DD format'),
         endDate: z.string().describe('End date in YYYY-MM-DD format'),
+        limit: z.number().describe('Maximum number of results to return (default: 50)').optional().default(50),
+        offset: z.number().describe('Offset for pagination (default: 0)').optional().default(0),
       },
-      async ({ startDate, endDate }) => {
+      async ({ startDate, endDate, limit = 50, offset = 0 }) => {
         try {
-          const validParams = userBehaviorSchema.parse({ startDate, endDate });
-
+          const validParams = userBehaviorSchema.parse({ startDate, endDate, limit, offset });
+          
           const response = await ga4Client.getUserBehavior(
-            validParams.startDate,
-            validParams.endDate
+            validParams.startDate, 
+            validParams.endDate,
+            validParams.limit,
+            validParams.offset
           );
-
-          const formattedResponse = formatGAResponse(response);
+          
+          const formattedResponse = formatGAResponse(response, validParams.limit, validParams.offset);
 
           return {
             content: [
@@ -219,11 +255,21 @@ async function main() {
             ],
           };
         } catch (error: any) {
+          console.error('GA4 user behavior error:', error);
+          
+          const errorDetails = {
+            message: error.message,
+            stack: error.stack,
+            details: error.details || 'No details',
+            code: error.code,
+            status: error.status,
+          };
+          
           return {
             content: [
               {
                 type: 'text',
-                text: `Error: ${error.message}`,
+                text: `Error: ${error.message}\nDetails: ${JSON.stringify(errorDetails, null, 2)}`,
               },
             ],
             isError: true,

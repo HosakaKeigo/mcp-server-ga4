@@ -12,6 +12,8 @@ This server provides the following MCP capabilities:
 - `get-events`: Get event metrics for a specific date range
 - `get-user-behavior`: Get user behavior metrics like session duration and bounce rate
 
+All tools support pagination with `limit` and `offset` parameters to handle large result sets.
+
 ### Resources
 - `ga4://property-info`: GA4 property metadata
 
@@ -55,6 +57,35 @@ npm run build
 Run the server:
 ```bash
 npm start
+```
+
+## Pagination
+
+All data retrieval tools support pagination parameters:
+
+- `limit`: Maximum number of results to return (default: 50, max: 1000)
+- `offset`: Number of results to skip (for pagination)
+
+Example:
+```
+// First page (results 1-50)
+get-page-views with limit=50, offset=0
+
+// Second page (results 51-100)
+get-page-views with limit=50, offset=50
+```
+
+The response includes pagination metadata:
+```json
+{
+  "data": [...],
+  "totalCount": 150,
+  "limit": 50,
+  "offset": 0,
+  "hasMore": true,
+  "pageCount": 3,
+  "currentPage": 1
+}
 ```
 
 ## Using with Claude for Desktop

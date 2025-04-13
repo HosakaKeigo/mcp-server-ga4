@@ -1,4 +1,5 @@
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
+import { google } from '@google-analytics/data/build/protos/protos.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -20,7 +21,11 @@ export class GA4Client {
     this.propertyId = process.env.GA_PROPERTY_ID || '';
 
     if (!clientEmail || !privateKey || !this.propertyId) {
-      throw new Error('Missing required environment variables for GA4 client');
+      console.error('Missing required environment variables:');
+      console.error('- GOOGLE_CLIENT_EMAIL:', clientEmail ? 'Set' : 'Missing');
+      console.error('- GOOGLE_PRIVATE_KEY:', privateKey ? 'Set' : 'Missing');
+      console.error('- GA_PROPERTY_ID:', this.propertyId ? 'Set' : 'Missing');
+      throw new Error('Missing required environment variables for GA4 client. Please check .env file.');
     }
 
     try {
@@ -39,8 +44,9 @@ export class GA4Client {
 
   /**
    * レポート実行のためのヘルパーメソッド
+   * GA4 APIは一度に全データを取得するため、クライアント側でページネーションを実装
    */
-  async runReport(config: any) {
+  async runReport(config: google.analytics.data.v1beta.IRunReportRequest) {
     try {
       const formattedConfig = {
         ...config,
@@ -59,40 +65,87 @@ export class GA4Client {
 
   /**
    * ページビュー指標取得
+   * @param startDate 開始日
+   * @param endDate 終了日
+   * @param dimensions ディメンション配列
+   * @param limit 結果の最大行数
+   * @param offset 開始オフセット
    */
-  async getPageViews(startDate: string, endDate: string, dimensions: string[] = ['hostName']) {
-    console.error(`Getting page views from ${startDate} to ${endDate} with dimensions:`, dimensions);
-
+  async getPageViews(
+    startDate: string, 
+    endDate: string, 
+    dimensions: string[] = ['hostName'],
+    limit?: number,
+    offset?: number
+  ) {
+    console.error(`Getting page views from ${startDate} to ${endDate} with dimensions:`, 
+      dimensions, `(limit: ${limit}, offset: ${offset})`);
+    
     // dimensions配列の各要素をチェック
     const validDimensions = dimensions.filter(dim => dim && typeof dim === 'string');
-
+    
     if (validDimensions.length === 0) {
       console.error('No valid dimensions provided, using default "hostName" dimension');
       validDimensions.push('hostName');
     }
-
-    return this.runReport({
+    
+    // GA4 APIではlimitが指定されている場合、設定
+    const requestConfig: any = {
       dateRanges: [{ startDate, endDate }],
       dimensions: validDimensions.map((dimension) => ({ name: dimension })),
       metrics: [{ name: 'screenPageViews' }],
-    });
+    };
+
+    // GA4 APIがrowLimitパラメータをサポートしている場合
+    if (limit && limit > 0) {
+      requestConfig.limit = limit;
+    }
+    
+    return this.runReport(requestConfig);
   }
 
   /**
    * アクティブユーザー指標取得
+   * @param startDate 開始日
+   * @param endDate 終了日
+   * @param limit 結果の最大行数
+   * @param offset 開始オフセット
    */
-  async getActiveUsers(startDate: string, endDate: string) {
-    return this.runReport({
+  async getActiveUsers(startDate: string, endDate: string, limit?: number, offset?: number) {
+    console.error(`Getting active users from ${startDate} to ${endDate} (limit: ${limit}, offset: ${offset})`);
+    
+    const requestConfig: any = {
       dateRanges: [{ startDate, endDate }],
       metrics: [{ name: 'activeUsers' }, { name: 'newUsers' }],
       dimensions: [{ name: 'date' }],
-    });
+    };
+
+    // GA4 APIがrowLimitパラメータをサポートしている場合
+    if (limit && limit > 0) {
+      requestConfig.limit = limit;
+    }
+    
+    return this.runReport(requestConfig);
   }
 
   /**
    * イベント指標取得
+   * @param startDate 開始日
+   * @param endDate 終了日
+   * @param eventName イベント名（オプション）
+   * @param limit 結果の最大行数
+   * @param offset 開始オフセット
    */
-  async getEvents(startDate: string, endDate: string, eventName?: string) {
+  async getEvents(
+    startDate: string, 
+    endDate: string, 
+    eventName?: string,
+    limit?: number,
+    offset?: number
+  ) {
+    console.error(`Getting events from ${startDate} to ${endDate}` +
+      `${eventName ? ` for event: ${eventName}` : ''} (limit: ${limit}, offset: ${offset})`);
+    
     const config: any = {
       dateRanges: [{ startDate, endDate }],
       dimensions: [{ name: 'eventName' }, { name: 'date' }],
@@ -108,14 +161,25 @@ export class GA4Client {
       };
     }
 
+    // GA4 APIがrowLimitパラメータをサポートしている場合
+    if (limit && limit > 0) {
+      config.limit = limit;
+    }
+
     return this.runReport(config);
   }
 
   /**
    * ユーザー行動指標取得
+   * @param startDate 開始日
+   * @param endDate 終了日
+   * @param limit 結果の最大行数
+   * @param offset 開始オフセット
    */
-  async getUserBehavior(startDate: string, endDate: string) {
-    return this.runReport({
+  async getUserBehavior(startDate: string, endDate: string, limit?: number, offset?: number) {
+    console.error(`Getting user behavior from ${startDate} to ${endDate} (limit: ${limit}, offset: ${offset})`);
+    
+    const config: any = {
       dateRanges: [{ startDate, endDate }],
       metrics: [
         { name: 'averageSessionDuration' },
@@ -123,7 +187,14 @@ export class GA4Client {
         { name: 'sessionsPerUser' },
       ],
       dimensions: [{ name: 'date' }],
-    });
+    };
+
+    // GA4 APIがrowLimitパラメータをサポートしている場合
+    if (limit && limit > 0) {
+      config.limit = limit;
+    }
+
+    return this.runReport(config);
   }
 
   /**
