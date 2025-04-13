@@ -3,73 +3,100 @@ import { userBehaviorSchema } from '../utils.js';
 import { GA4Client } from '../ga4-client.js';
 import { formatGAResponse } from '../utils.js';
 import { SimpleFilter } from '../types/ga4-filters.js';
-import { IMCPTool } from '../types/index.js';
+import { IMCPTool, InferZodParams } from '../types/index.js';
+import { TextContent } from '@modelcontextprotocol/sdk/types.js';
 
 /**
- * ユーザー行動のZodスキーマ型
+ * ユーザー行動分析ツールクラス
  */
-const userBehaviorParamsSchema = {
-  startDate: z.string().describe('Start date in YYYY-MM-DD format'),
-  endDate: z.string().describe('End date in YYYY-MM-DD format'),
-  limit: z.number().describe('Maximum number of results to return (default: 50)').optional().default(50),
-  offset: z.number().describe('Offset for pagination (default: 0)').optional().default(0),
-  filter: z.any().describe('Filter conditions to apply (optional)').optional(),
-};
+export class UserBehaviorTool implements IMCPTool {
+  /**
+   * GA4クライアントインスタンス
+   */
+  private ga4Client: GA4Client;
 
-/**
- * ユーザー行動分析ツール定義
- */
-export function userBehaviorTool(ga4Client: GA4Client): IMCPTool<typeof userBehaviorParamsSchema> {
-  return {
-    name: 'get-user-behavior',
-    description: 'Get user behavior metrics like session duration and bounce rate',
-    schema: userBehaviorParamsSchema,
-    handler: async ({ startDate, endDate, limit = 50, offset = 0, filter }) => {
-      try {
-        // 入力パラメータの検証
-        const validParams = userBehaviorSchema.parse({ startDate, endDate, limit, offset, filter });
+  /**
+   * コンストラクタ
+   * @param ga4Client GA4クライアントインスタンス
+   */
+  constructor(ga4Client: GA4Client) {
+    this.ga4Client = ga4Client;
+  }
 
-        // GA4からデータ取得
-        const response = await ga4Client.getUserBehavior(
-          validParams.startDate,
-          validParams.endDate,
-          validParams.limit,
-          validParams.offset,
-          validParams.filter as SimpleFilter
-        );
+  /**
+   * ツール名
+   */
+  readonly name = 'get-user-behavior';
 
-        // レスポンスのフォーマット
-        const formattedResponse = formatGAResponse(response, validParams.limit, validParams.offset);
+  /**
+   * ツールの説明
+   */
+  readonly description = 'Get user behavior metrics like session duration and bounce rate';
 
-        return {
-          content: [
-            {
-              type: 'text',
-              text: JSON.stringify(formattedResponse, null, 2),
-            },
-          ],
-        };
-      } catch (error: any) {
-        console.error('GA4 user behavior error:', error);
+  /**
+   * パラメータ定義
+   */
+  readonly parameters = {
+    startDate: z.string().describe('Start date in YYYY-MM-DD format'),
+    endDate: z.string().describe('End date in YYYY-MM-DD format'),
+    limit: z.number().describe('Maximum number of results to return (default: 50)').optional().default(50),
+    offset: z.number().describe('Offset for pagination (default: 0)').optional().default(0),
+    filter: z.any().describe('Filter conditions to apply (optional)').optional(),
+  } as const;
 
-        const errorDetails = {
-          message: error.message,
-          stack: error.stack,
-          details: error.details || 'No details',
-          code: error.code,
-          status: error.status,
-        };
+  /**
+   * ツール実行メソッド
+   */
+  async execute(args: InferZodParams<typeof this.parameters>): Promise<{
+    content: TextContent[];
+    isError?: boolean;
+  }> {
+    try {
+      const { startDate, endDate, limit = 50, offset = 0, filter } = args;
 
-        return {
-          content: [
-            {
-              type: 'text',
-              text: `Error: ${error.message}\nDetails: ${JSON.stringify(errorDetails, null, 2)}`,
-            },
-          ],
-          isError: true,
-        };
-      }
+      // 入力パラメータの検証
+      const validParams = userBehaviorSchema.parse({ startDate, endDate, limit, offset, filter });
+
+      // GA4からデータ取得
+      const response = await this.ga4Client.getUserBehavior(
+        validParams.startDate,
+        validParams.endDate,
+        validParams.limit,
+        validParams.offset,
+        validParams.filter as SimpleFilter
+      );
+
+      // レスポンスのフォーマット
+      const formattedResponse = formatGAResponse(response, validParams.limit, validParams.offset);
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(formattedResponse, null, 2),
+          },
+        ],
+      };
+    } catch (error: any) {
+      console.error('GA4 user behavior error:', error);
+
+      const errorDetails = {
+        message: error.message,
+        stack: error.stack,
+        details: error.details || 'No details',
+        code: error.code,
+        status: error.status,
+      };
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: `Error: ${error.message}\nDetails: ${JSON.stringify(errorDetails, null, 2)}`,
+          },
+        ],
+        isError: true,
+      };
     }
-  };
+  }
 }

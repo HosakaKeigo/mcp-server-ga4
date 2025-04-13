@@ -5,7 +5,11 @@ import type { z } from "zod";
  * Zodスキーマから型を抽出するユーティリティ型
  */
 export type InferZodParams<T extends Record<string, z.ZodType>> = {
-  [K in keyof T]: z.infer<T[K]>;
+  [K in keyof T]: T[K] extends z.ZodOptional<infer U> ?
+    z.infer<U> | undefined :
+    T[K] extends z.ZodDefault<infer V> ?
+      z.infer<V> :
+      z.infer<T[K]>;
 };
 
 /**
@@ -25,14 +29,14 @@ export interface IMCPTool<TParams extends Record<string, z.ZodType> = Record<str
   /**
    * パラメータの定義
    */
-  readonly schema: TParams;
+  readonly parameters: TParams;
 
   /**
    * ツールを実行する
    * @param args パラメータ
    * @returns 実行結果
    */
-  handler(args: InferZodParams<TParams>): Promise<{
+  execute(args: InferZodParams<TParams>): Promise<{
     content: TextContent[];
     isError?: boolean;
   }>;

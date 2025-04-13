@@ -13,7 +13,7 @@ export function registerPrompts(server: McpServer) {
   server.prompt(
     analyzeData.name,
     analyzeData.schema,
-    analyzeData.handler
+    (args) => analyzeData.handler(args as any)
   );
 
   // レポート生成プロンプト
@@ -21,7 +21,7 @@ export function registerPrompts(server: McpServer) {
   server.prompt(
     createReport.name,
     createReport.schema,
-    createReport.handler
+    (args) => createReport.handler(args as any)
   );
 
   // ディメンション選択プロンプト
@@ -29,7 +29,7 @@ export function registerPrompts(server: McpServer) {
   server.prompt(
     selectDimensions.name,
     selectDimensions.schema,
-    selectDimensions.handler
+    (args) => selectDimensions.handler(args as any)
   );
 
   console.error('GA4 prompts registered');
