@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { pageViewsSchema } from '../utils.js';
 import { GA4Client } from '../ga4-client.js';
 import { formatGAResponse } from '../utils.js';
-import { SimpleFilter } from '../types/ga4-filters.js';
+import { SimpleFilter, simpleFilterSchema } from '../types/ga4-filters.js';
 import { IMCPTool, InferZodParams } from '../types/index.js';
 import { TextContent } from '@modelcontextprotocol/sdk/types.js';
 
@@ -42,7 +42,7 @@ export class PageViewsTool implements IMCPTool {
     dimensions: z.array(z.string()).describe('Dimensions to group by (e.g., page, country)').optional().default(['hostName']),
     limit: z.number().describe('Maximum number of results to return (default: 50)').optional().default(50),
     offset: z.number().describe('Offset for pagination (default: 0)').optional().default(0),
-    filter: z.any().describe('Filter conditions to apply (optional)').optional(),
+    filter: simpleFilterSchema.describe('Filter conditions to apply (optional)').optional(),
   } as const;
 
   /**

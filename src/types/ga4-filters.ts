@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 /**
  * GA4 API フィルター定義
  * 参照: https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/FilterExpression
@@ -71,33 +73,47 @@ export type BetweenFilter = {
 export type EmptyFilter = Record<string, never>;
 
 /**
+ * MCPツール向け簡易フィルター形式のZodスキーマ
+ * GA4 APIフィルター構造に変換されます
+ */
+export const dimensionSchema = z.object({
+  name: z.string(),
+  stringEquals: z.string().optional(),
+  stringContains: z.string().optional(),
+  stringBeginsWith: z.string().optional(),
+  stringEndsWith: z.string().optional(),
+  stringRegex: z.string().optional(),
+  inList: z.array(z.string()).optional(),
+  isEmpty: z.boolean().optional(),
+  caseSensitive: z.boolean().optional(),
+});
+
+export const metricSchema = z.object({
+  name: z.string(),
+  equals: z.number().optional(),
+  lessThan: z.number().optional(),
+  lessThanOrEqual: z.number().optional(),
+  greaterThan: z.number().optional(),
+  greaterThanOrEqual: z.number().optional(),
+  between: z.object({
+    from: z.number(),
+    to: z.number(),
+  }).optional(),
+  isEmpty: z.boolean().optional(),
+});
+
+export const simpleFilterSchema = z.object({
+  dimension: z.array(dimensionSchema).optional(),
+  metric: z.array(metricSchema).optional(),
+  operator: z.enum(['AND', 'OR']).optional(),
+});
+
+/**
  * MCPツール向け簡易フィルター形式
  * GA4 APIフィルター構造に変換されます
  */
-export type SimpleFilter = {
-  dimension?: {
-    name: string;
-    stringEquals?: string;
-    stringContains?: string;
-    stringBeginsWith?: string;
-    stringEndsWith?: string;
-    stringRegex?: string;
-    inList?: string[];
-    isEmpty?: boolean;
-    caseSensitive?: boolean;
-  }[];
-  metric?: {
-    name: string;
-    equals?: number;
-    lessThan?: number;
-    lessThanOrEqual?: number;
-    greaterThan?: number;
-    greaterThanOrEqual?: number;
-    between?: { from: number; to: number };
-    isEmpty?: boolean;
-  }[];
-  operator?: 'AND' | 'OR';
-};
+export type SimpleFilter = z.infer<typeof simpleFilterSchema>;
+
 
 /**
  * SimpleFilterをGA4 API FilterExpressionに変換
@@ -200,11 +216,11 @@ export function convertToFilterExpression(filter: SimpleFilter): FilterExpressio
 
   // すべての式を結合
   const allExpressions = [...dimensionExpressions, ...metricExpressions];
-  
+
   if (allExpressions.length === 0) {
     return undefined;
   }
-  
+
   if (allExpressions.length === 1) {
     return allExpressions[0];
   }
