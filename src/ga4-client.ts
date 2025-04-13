@@ -1,6 +1,7 @@
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import { google } from '@google-analytics/data/build/protos/protos.js';
 import dotenv from 'dotenv';
+import { SimpleFilter, convertToFilterExpression } from './types/ga4-filters.js';
 
 dotenv.config();
 
@@ -70,13 +71,15 @@ export class GA4Client {
    * @param dimensions ディメンション配列
    * @param limit 結果の最大行数
    * @param offset 開始オフセット
+   * @param filter 結果をフィルターする条件
    */
   async getPageViews(
     startDate: string, 
     endDate: string, 
     dimensions: string[] = ['hostName'],
     limit?: number,
-    offset?: number
+    offset?: number,
+    filter?: SimpleFilter
   ) {
     console.error(`Getting page views from ${startDate} to ${endDate} with dimensions:`, 
       dimensions, `(limit: ${limit}, offset: ${offset})`);
@@ -96,6 +99,14 @@ export class GA4Client {
       metrics: [{ name: 'screenPageViews' }],
     };
 
+    // フィルターが存在する場合は適用
+    if (filter) {
+      const filterExpression = convertToFilterExpression(filter);
+      if (filterExpression) {
+        requestConfig.dimensionFilter = filterExpression;
+      }
+    }
+
     // GA4 APIがrowLimitパラメータをサポートしている場合
     if (limit && limit > 0) {
       requestConfig.limit = limit;
@@ -110,8 +121,15 @@ export class GA4Client {
    * @param endDate 終了日
    * @param limit 結果の最大行数
    * @param offset 開始オフセット
+   * @param filter 結果をフィルターする条件
    */
-  async getActiveUsers(startDate: string, endDate: string, limit?: number, offset?: number) {
+  async getActiveUsers(
+    startDate: string, 
+    endDate: string, 
+    limit?: number, 
+    offset?: number,
+    filter?: SimpleFilter
+  ) {
     console.error(`Getting active users from ${startDate} to ${endDate} (limit: ${limit}, offset: ${offset})`);
     
     const requestConfig: any = {
@@ -119,6 +137,14 @@ export class GA4Client {
       metrics: [{ name: 'activeUsers' }, { name: 'newUsers' }],
       dimensions: [{ name: 'date' }],
     };
+
+    // フィルターが存在する場合は適用
+    if (filter) {
+      const filterExpression = convertToFilterExpression(filter);
+      if (filterExpression) {
+        requestConfig.dimensionFilter = filterExpression;
+      }
+    }
 
     // GA4 APIがrowLimitパラメータをサポートしている場合
     if (limit && limit > 0) {
@@ -135,13 +161,15 @@ export class GA4Client {
    * @param eventName イベント名（オプション）
    * @param limit 結果の最大行数
    * @param offset 開始オフセット
+   * @param filter 結果をフィルターする条件
    */
   async getEvents(
     startDate: string, 
     endDate: string, 
     eventName?: string,
     limit?: number,
-    offset?: number
+    offset?: number,
+    filter?: SimpleFilter
   ) {
     console.error(`Getting events from ${startDate} to ${endDate}` +
       `${eventName ? ` for event: ${eventName}` : ''} (limit: ${limit}, offset: ${offset})`);
@@ -152,13 +180,37 @@ export class GA4Client {
       metrics: [{ name: 'eventCount' }],
     };
 
+    // 特定のイベント名が指定されている場合
     if (eventName) {
       config.dimensionFilter = {
         filter: {
           fieldName: 'eventName',
-          stringFilter: { value: eventName },
+          stringFilter: { 
+            matchType: 'EXACT',
+            value: eventName,
+          },
         },
       };
+    }
+
+    // フィルターが存在する場合は、eventNameと結合して適用
+    if (filter) {
+      const filterExpression = convertToFilterExpression(filter);
+      if (filterExpression) {
+        // すでにeventNameフィルターがある場合は、ANDで結合
+        if (eventName) {
+          config.dimensionFilter = {
+            andGroup: {
+              expressions: [
+                config.dimensionFilter,
+                filterExpression
+              ]
+            }
+          };
+        } else {
+          config.dimensionFilter = filterExpression;
+        }
+      }
     }
 
     // GA4 APIがrowLimitパラメータをサポートしている場合
@@ -175,8 +227,15 @@ export class GA4Client {
    * @param endDate 終了日
    * @param limit 結果の最大行数
    * @param offset 開始オフセット
+   * @param filter 結果をフィルターする条件
    */
-  async getUserBehavior(startDate: string, endDate: string, limit?: number, offset?: number) {
+  async getUserBehavior(
+    startDate: string, 
+    endDate: string, 
+    limit?: number, 
+    offset?: number,
+    filter?: SimpleFilter
+  ) {
     console.error(`Getting user behavior from ${startDate} to ${endDate} (limit: ${limit}, offset: ${offset})`);
     
     const config: any = {
@@ -188,6 +247,14 @@ export class GA4Client {
       ],
       dimensions: [{ name: 'date' }],
     };
+
+    // フィルターが存在する場合は適用
+    if (filter) {
+      const filterExpression = convertToFilterExpression(filter);
+      if (filterExpression) {
+        config.dimensionFilter = filterExpression;
+      }
+    }
 
     // GA4 APIがrowLimitパラメータをサポートしている場合
     if (limit && limit > 0) {

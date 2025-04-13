@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { SimpleFilter } from './types/ga4-filters.js';
 
 /**
  * MCP レスポンス用にGA4 APIのレスポンスをフォーマット
@@ -13,16 +14,16 @@ export function formatGAResponse(response: any, limit?: number, offset: number =
 
   const dimensionHeaders = response.dimensionHeaders?.map((header: any) => header.name) || [];
   const metricHeaders = response.metricHeaders?.map((header: any) => header.name) || [];
-
+  
   // ページネーションの適用
   const totalCount = response.rows.length;
-  const paginatedRows = limit
+  const paginatedRows = limit 
     ? response.rows.slice(offset, offset + limit)
     : response.rows.slice(offset);
-
+  
   const rows = paginatedRows.map((row: any) => {
     const result: Record<string, any> = {};
-
+    
     // ディメンションの処理
     if (row.dimensionValues) {
       row.dimensionValues.forEach((value: any, index: number) => {
@@ -31,7 +32,7 @@ export function formatGAResponse(response: any, limit?: number, offset: number =
         }
       });
     }
-
+    
     // メトリクスの処理
     if (row.metricValues) {
       row.metricValues.forEach((value: any, index: number) => {
@@ -40,7 +41,7 @@ export function formatGAResponse(response: any, limit?: number, offset: number =
         }
       });
     }
-
+    
     return result;
   });
 
@@ -66,6 +67,41 @@ export const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
 });
 
 /**
+ * フィルターの基本となるZodスキーマ
+ */
+export const filterSchema = z.object({
+  dimension: z.array(
+    z.object({
+      name: z.string(),
+      stringEquals: z.string().optional(),
+      stringContains: z.string().optional(),
+      stringBeginsWith: z.string().optional(),
+      stringEndsWith: z.string().optional(),
+      stringRegex: z.string().optional(),
+      inList: z.array(z.string()).optional(),
+      isEmpty: z.boolean().optional(),
+      caseSensitive: z.boolean().optional().default(false)
+    })
+  ).optional(),
+  metric: z.array(
+    z.object({
+      name: z.string(),
+      equals: z.number().optional(),
+      lessThan: z.number().optional(),
+      lessThanOrEqual: z.number().optional(),
+      greaterThan: z.number().optional(),
+      greaterThanOrEqual: z.number().optional(),
+      between: z.object({
+        from: z.number(),
+        to: z.number()
+      }).optional(),
+      isEmpty: z.boolean().optional()
+    })
+  ).optional(),
+  operator: z.enum(['AND', 'OR']).optional().default('AND')
+}).optional();
+
+/**
  * ページネーションパラメータのスキーマ
  */
 export const paginationSchema = z.object({
@@ -82,6 +118,7 @@ export const pageViewsSchema = z.object({
   dimensions: z.array(z.string()).optional().default(['hostName']),
   limit: z.number().min(1).max(1000).optional().default(50),
   offset: z.number().min(0).optional().default(0),
+  filter: filterSchema
 });
 
 /**
@@ -92,6 +129,7 @@ export const activeUsersSchema = z.object({
   endDate: dateSchema,
   limit: z.number().min(1).max(1000).optional().default(50),
   offset: z.number().min(0).optional().default(0),
+  filter: filterSchema
 });
 
 /**
@@ -103,6 +141,7 @@ export const eventsSchema = z.object({
   eventName: z.string().optional(),
   limit: z.number().min(1).max(1000).optional().default(50),
   offset: z.number().min(0).optional().default(0),
+  filter: filterSchema
 });
 
 /**
@@ -113,4 +152,5 @@ export const userBehaviorSchema = z.object({
   endDate: dateSchema,
   limit: z.number().min(1).max(1000).optional().default(50),
   offset: z.number().min(0).optional().default(0),
+  filter: filterSchema
 });

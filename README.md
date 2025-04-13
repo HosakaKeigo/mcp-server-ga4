@@ -17,6 +17,7 @@ All tools support pagination with `limit` and `offset` parameters to handle larg
 ### Resources
 - `ga4://property-info`: GA4 property metadata
 - `ga4://dimensions`: Complete list of available GA4 dimensions with descriptions
+- `ga4://filters-help`: Help documentation on using GA4 filters
 
 ### Prompts
 - `analyze-data`: Data analysis assistant prompt
@@ -60,6 +61,38 @@ Run the server:
 ```bash
 npm start
 ```
+
+## Filtering
+
+All data retrieval tools support filtering with the optional `filter` parameter. Filters allow you to narrow down results based on specific criteria:
+
+```json
+{
+  "dimension": [
+    {
+      "name": "pagePath",
+      "stringEquals": "/blog/article-1"
+    }
+  ],
+  "metric": [
+    {
+      "name": "screenPageViews",
+      "greaterThan": 100
+    }
+  ],
+  "operator": "AND"
+}
+```
+
+Filtering supports:
+
+- Multiple dimension conditions
+- Multiple metric conditions 
+- String filters (equals, contains, begins/ends with, regex)
+- Numeric filters (equals, less/greater than, between)
+- Combining conditions with AND/OR operators
+
+See the `ga4://filters-help` resource for comprehensive documentation and examples.
 
 ## Pagination
 
