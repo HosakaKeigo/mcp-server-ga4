@@ -74,26 +74,26 @@ export class GA4Client {
    * @param filter 結果をフィルターする条件
    */
   async getPageViews(
-    startDate: string, 
-    endDate: string, 
+    startDate: string,
+    endDate: string,
     dimensions: string[] = ['hostName'],
     limit?: number,
     offset?: number,
     filter?: SimpleFilter
   ) {
-    console.error(`Getting page views from ${startDate} to ${endDate} with dimensions:`, 
+    console.error(`Getting page views from ${startDate} to ${endDate} with dimensions:`,
       dimensions, `(limit: ${limit}, offset: ${offset})`);
-    
+
     // dimensions配列の各要素をチェック
     const validDimensions = dimensions.filter(dim => dim && typeof dim === 'string');
-    
+
     if (validDimensions.length === 0) {
       console.error('No valid dimensions provided, using default "hostName" dimension');
       validDimensions.push('hostName');
     }
-    
+
     // GA4 APIではlimitが指定されている場合、設定
-    const requestConfig: any = {
+    const requestConfig: google.analytics.data.v1beta.IRunReportRequest = {
       dateRanges: [{ startDate, endDate }],
       dimensions: validDimensions.map((dimension) => ({ name: dimension })),
       metrics: [{ name: 'screenPageViews' }],
@@ -111,7 +111,7 @@ export class GA4Client {
     if (limit && limit > 0) {
       requestConfig.limit = limit;
     }
-    
+
     return this.runReport(requestConfig);
   }
 
@@ -124,15 +124,15 @@ export class GA4Client {
    * @param filter 結果をフィルターする条件
    */
   async getActiveUsers(
-    startDate: string, 
-    endDate: string, 
-    limit?: number, 
+    startDate: string,
+    endDate: string,
+    limit?: number,
     offset?: number,
     filter?: SimpleFilter
   ) {
     console.error(`Getting active users from ${startDate} to ${endDate} (limit: ${limit}, offset: ${offset})`);
-    
-    const requestConfig: any = {
+
+    const requestConfig: google.analytics.data.v1beta.IRunReportRequest = {
       dateRanges: [{ startDate, endDate }],
       metrics: [{ name: 'activeUsers' }, { name: 'newUsers' }],
       dimensions: [{ name: 'date' }],
@@ -150,7 +150,7 @@ export class GA4Client {
     if (limit && limit > 0) {
       requestConfig.limit = limit;
     }
-    
+
     return this.runReport(requestConfig);
   }
 
@@ -164,8 +164,8 @@ export class GA4Client {
    * @param filter 結果をフィルターする条件
    */
   async getEvents(
-    startDate: string, 
-    endDate: string, 
+    startDate: string,
+    endDate: string,
     eventName?: string,
     limit?: number,
     offset?: number,
@@ -173,8 +173,8 @@ export class GA4Client {
   ) {
     console.error(`Getting events from ${startDate} to ${endDate}` +
       `${eventName ? ` for event: ${eventName}` : ''} (limit: ${limit}, offset: ${offset})`);
-    
-    const config: any = {
+
+    const config: google.analytics.data.v1beta.IRunReportRequest = {
       dateRanges: [{ startDate, endDate }],
       dimensions: [{ name: 'eventName' }, { name: 'date' }],
       metrics: [{ name: 'eventCount' }],
@@ -185,7 +185,7 @@ export class GA4Client {
       config.dimensionFilter = {
         filter: {
           fieldName: 'eventName',
-          stringFilter: { 
+          stringFilter: {
             matchType: 'EXACT',
             value: eventName,
           },
@@ -202,7 +202,7 @@ export class GA4Client {
           config.dimensionFilter = {
             andGroup: {
               expressions: [
-                config.dimensionFilter,
+                config.dimensionFilter as google.analytics.data.v1beta.IFilterExpression,
                 filterExpression
               ]
             }
@@ -230,15 +230,15 @@ export class GA4Client {
    * @param filter 結果をフィルターする条件
    */
   async getUserBehavior(
-    startDate: string, 
-    endDate: string, 
-    limit?: number, 
+    startDate: string,
+    endDate: string,
+    limit?: number,
     offset?: number,
     filter?: SimpleFilter
   ) {
     console.error(`Getting user behavior from ${startDate} to ${endDate} (limit: ${limit}, offset: ${offset})`);
-    
-    const config: any = {
+
+    const config: google.analytics.data.v1beta.IRunReportRequest = {
       dateRanges: [{ startDate, endDate }],
       metrics: [
         { name: 'averageSessionDuration' },

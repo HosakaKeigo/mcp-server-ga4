@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { SimpleFilter } from './types/ga4-filters.js';
+import { google } from '@google-analytics/data/build/protos/protos.js';
 
 /**
  * MCP レスポンス用にGA4 APIのレスポンスをフォーマット
@@ -7,23 +8,23 @@ import { SimpleFilter } from './types/ga4-filters.js';
  * @param limit 返却行数の制限（オプション）
  * @param offset 開始位置（オプション）
  */
-export function formatGAResponse(response: any, limit?: number, offset: number = 0) {
+export function formatGAResponse(response: google.analytics.data.v1beta.IRunReportResponse, limit?: number, offset: number = 0) {
   if (!response || !response.rows) {
     return { data: [], totalCount: 0, limit, offset };
   }
 
   const dimensionHeaders = response.dimensionHeaders?.map((header: any) => header.name) || [];
   const metricHeaders = response.metricHeaders?.map((header: any) => header.name) || [];
-  
+
   // ページネーションの適用
   const totalCount = response.rows.length;
-  const paginatedRows = limit 
+  const paginatedRows = limit
     ? response.rows.slice(offset, offset + limit)
     : response.rows.slice(offset);
-  
+
   const rows = paginatedRows.map((row: any) => {
     const result: Record<string, any> = {};
-    
+
     // ディメンションの処理
     if (row.dimensionValues) {
       row.dimensionValues.forEach((value: any, index: number) => {
@@ -32,7 +33,7 @@ export function formatGAResponse(response: any, limit?: number, offset: number =
         }
       });
     }
-    
+
     // メトリクスの処理
     if (row.metricValues) {
       row.metricValues.forEach((value: any, index: number) => {
@@ -41,7 +42,7 @@ export function formatGAResponse(response: any, limit?: number, offset: number =
         }
       });
     }
-    
+
     return result;
   });
 
