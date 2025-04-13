@@ -1,4 +1,5 @@
 import type { IMCPResource } from "../types/index.js";
+import { handleError } from "../utils/error-handler.js";
 import { GA4_DIMENSIONS } from "./ga4-dimensions.js";
 
 /**
@@ -29,8 +30,9 @@ export class DimensionsResource implements IMCPResource {
 					},
 				],
 			};
-		} catch (error: any) {
-			throw new Error(`Failed to get GA4 dimensions: ${error.message}`);
+		} catch (error) {
+			const { message } = handleError(error);
+			throw new Error(`Failed to get GA4 dimensions: ${message}`);
 		}
 	}
 }

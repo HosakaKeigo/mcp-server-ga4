@@ -1,4 +1,5 @@
 import type { IMCPResource } from "../types/index.js";
+import { handleError } from "../utils/error-handler.js";
 import { GA4_FILTERS_HELP } from "./ga4-filters-help.js";
 
 /**
@@ -29,8 +30,9 @@ export class FiltersHelpResource implements IMCPResource {
 					},
 				],
 			};
-		} catch (error: any) {
-			throw new Error(`Failed to get GA4 filters help: ${error.message}`);
+		} catch (error) {
+			const { message } = handleError(error);
+			throw new Error(`Failed to process filters help: ${message}`);
 		}
 	}
 }

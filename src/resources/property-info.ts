@@ -1,5 +1,6 @@
 import type { GA4Client } from "../ga4-client.js";
 import type { IMCPResource } from "../types/index.js";
+import { handleError } from "../utils/error-handler.js";
 
 /**
  * GA4プロパティ情報リソースクラス
@@ -43,10 +44,9 @@ export class PropertyInfoResource implements IMCPResource {
 					},
 				],
 			};
-		} catch (error: any) {
-			throw new Error(
-				`Failed to get GA4 property information: ${error.message}`,
-			);
+		} catch (error) {
+			const { message } = handleError(error);
+			throw new Error(`Failed to get property info: ${message}`);
 		}
 	}
 }

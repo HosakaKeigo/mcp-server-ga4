@@ -5,6 +5,7 @@ import { type SimpleFilter, simpleFilterSchema } from "../types/ga4-filters.js";
 import type { IMCPTool, InferZodParams } from "../types/index.js";
 import { userBehaviorSchema } from "../utils.js";
 import { formatGAResponse } from "../utils.js";
+import { handleError } from "../utils/error-handler.js";
 
 /**
  * ユーザー行動分析ツールクラス
@@ -98,22 +99,13 @@ export class UserBehaviorTool implements IMCPTool {
 					},
 				],
 			};
-		} catch (error: any) {
-			console.error("GA4 user behavior error:", error);
-
-			const errorDetails = {
-				message: error.message,
-				stack: error.stack,
-				details: error.details || "No details",
-				code: error.code,
-				status: error.status,
-			};
-
+		} catch (error) {
+			const { message, details } = handleError(error);
 			return {
 				content: [
 					{
 						type: "text",
-						text: `Error: ${error.message}\nDetails: ${JSON.stringify(errorDetails, null, 2)}`,
+						text: `Error: ${message}\nDetails: ${details}`,
 					},
 				],
 				isError: true,
