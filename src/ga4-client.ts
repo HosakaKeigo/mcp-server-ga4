@@ -1,7 +1,7 @@
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
-import dotenvx from '@dotenvx/dotenvx';
+import dotenv from 'dotenv';
 
-dotenvx.config();
+dotenv.config();
 
 /**
  * GA4データクライアントの初期化と管理を行うクラス
