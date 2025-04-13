@@ -168,3 +168,14 @@ export const userBehaviorSchema = z.object({
 	offset: z.number().min(0).optional().default(0),
 	filter: filterSchema,
 });
+
+/**
+ * ソースメディアクエリのバリデーションスキーマ
+ */
+export const sourceMediaSchema = z.object({
+	startDate: dateSchema,
+	endDate: dateSchema,
+	limit: z.number().min(1).max(1000).optional().default(50),
+	offset: z.number().min(0).optional().default(0),
+	filter: filterSchema,
+});

@@ -4,6 +4,7 @@ import type { IMCPTool } from "../types/index.js";
 import { ActiveUsersTool } from "./active-users.js";
 import { EventsTool } from "./events.js";
 import { PageViewsTool } from "./page-views.js";
+import { SourceMediaTool } from "./source-media.js";
 import { UserBehaviorTool } from "./user-behavior.js";
 
 /**
@@ -16,6 +17,7 @@ export function registerTools(server: McpServer, ga4Client: GA4Client) {
 		new ActiveUsersTool(ga4Client),
 		new EventsTool(ga4Client),
 		new UserBehaviorTool(ga4Client),
+		new SourceMediaTool(ga4Client),
 	];
 
 	for (const tool of ALL_TOOLS) {

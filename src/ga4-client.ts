@@ -289,6 +289,47 @@ export class GA4Client {
 	}
 
 	/**
+	 * ソースメディア情報取得メソッド
+	 * @param startDate 開始日
+	 * @param endDate 終了日
+	 * @param limit 結果の最大行数
+	 * @param offset 開始オフセット
+	 * @param filter 結果をフィルターする条件
+	 */
+	async getSourceMedia(
+		startDate: string,
+		endDate: string,
+		limit?: number,
+		offset?: number,
+		filter?: SimpleFilter,
+	) {
+		console.error(
+			`Getting source/medium data from ${startDate} to ${endDate} (limit: ${limit}, offset: ${offset})`,
+		);
+
+		const config: google.analytics.data.v1beta.IRunReportRequest = {
+			dateRanges: [{ startDate, endDate }],
+			metrics: [{ name: "sessions" }, { name: "activeUsers" }],
+			dimensions: [{ name: "sessionSource" }, { name: "sessionMedium" }],
+		};
+
+		// フィルターが存在する場合は適用
+		if (filter) {
+			const filterExpression = convertToFilterExpression(filter);
+			if (filterExpression) {
+				config.dimensionFilter = filterExpression;
+			}
+		}
+
+		// GA4 APIがrowLimitパラメータをサポートしている場合
+		if (limit && limit > 0) {
+			config.limit = limit;
+		}
+
+		return this.runReport(config);
+	}
+
+	/**
 	 * プロパティ情報取得（メタデータ）
 	 */
 	async getPropertyMetadata() {
