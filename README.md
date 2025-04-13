@@ -16,9 +16,13 @@ This server provides the following MCP functionalities:
 
 ### Resources
 
-*   `ga4://property-info`: Metadata for the GA4 property.
+*   `ga4://property-info`: Metadata for the GA4 property including available dimensions, metrics and comparisons.
+
+The followings are more lightweight resources.
+
 *   `ga4://dimensions`: List of available GA4 dimensions.
 *   `ga4://filters-help`: Help documentation on using GA4 filters.
+*   `ga4://metrics`: List of available GA4 metrics.
 
 ### Prompts
 
