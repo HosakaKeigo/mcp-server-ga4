@@ -39,11 +39,3 @@ export class CreateReportPrompt implements IMCPPrompt {
     };
   }
 }
-
-/**
- * レポート生成プロンプトの作成関数
- * @returns レポート生成プロンプトインスタンス
- */
-export function createReportPrompt(): CreateReportPrompt {
-  return new CreateReportPrompt();
-}

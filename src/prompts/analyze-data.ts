@@ -37,11 +37,3 @@ export class AnalyzeDataPrompt implements IMCPPrompt {
     };
   }
 }
-
-/**
- * データ分析プロンプトの作成関数
- * @returns データ分析プロンプトインスタンス
- */
-export function analyzeDataPrompt(): AnalyzeDataPrompt {
-  return new AnalyzeDataPrompt();
-}

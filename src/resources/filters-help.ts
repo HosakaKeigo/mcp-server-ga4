@@ -34,11 +34,3 @@ export class FiltersHelpResource implements IMCPResource {
     }
   }
 }
-
-/**
- * GA4フィルターヘルプリソースの作成関数
- * @returns GA4フィルターヘルプリソースインスタンス
- */
-export function filtersHelpResource(): FiltersHelpResource {
-  return new FiltersHelpResource();
-}

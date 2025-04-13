@@ -48,12 +48,3 @@ export class PropertyInfoResource implements IMCPResource {
     }
   }
 }
-
-/**
- * GA4プロパティ情報リソースの作成関数
- * @param ga4Client GA4クライアントインスタンス
- * @returns GA4プロパティ情報リソースインスタンス
- */
-export function propertyInfoResource(ga4Client: GA4Client): PropertyInfoResource {
-  return new PropertyInfoResource(ga4Client);
-}

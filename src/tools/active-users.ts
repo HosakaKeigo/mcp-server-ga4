@@ -100,12 +100,3 @@ export class ActiveUsersTool implements IMCPTool {
     }
   }
 }
-
-/**
- * アクティブユーザー取得ツールの作成関数
- * @param ga4Client GA4クライアントインスタンス
- * @returns アクティブユーザー取得ツールインスタンス
- */
-export function activeUsersTool(ga4Client: GA4Client): ActiveUsersTool {
-  return new ActiveUsersTool(ga4Client);
-}

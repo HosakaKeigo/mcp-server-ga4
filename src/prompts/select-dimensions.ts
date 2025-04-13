@@ -36,11 +36,3 @@ export class SelectDimensionsPrompt implements IMCPPrompt {
     };
   }
 }
-
-/**
- * ディメンション選択プロンプトの作成関数
- * @returns ディメンション選択プロンプトインスタンス
- */
-export function selectDimensionsPrompt(): SelectDimensionsPrompt {
-  return new SelectDimensionsPrompt();
-}

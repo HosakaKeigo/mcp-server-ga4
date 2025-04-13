@@ -34,11 +34,3 @@ export class DimensionsResource implements IMCPResource {
     }
   }
 }
-
-/**
- * GA4ディメンション一覧リソースの作成関数
- * @returns GA4ディメンション一覧リソースインスタンス
- */
-export function dimensionsResource(): DimensionsResource {
-  return new DimensionsResource();
-}
