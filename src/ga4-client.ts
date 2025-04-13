@@ -310,7 +310,11 @@ export class GA4Client {
 		const config: google.analytics.data.v1beta.IRunReportRequest = {
 			dateRanges: [{ startDate, endDate }],
 			metrics: [{ name: "sessions" }, { name: "activeUsers" }],
-			dimensions: [{ name: "sessionSource" }, { name: "sessionMedium" }],
+			dimensions: [
+				{ name: "sessionSource" },
+				{ name: "sessionMedium" },
+				{ name: "sessionCampaignName" },
+			],
 		};
 
 		// フィルターが存在する場合は適用
