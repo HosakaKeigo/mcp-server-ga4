@@ -35,11 +35,34 @@ export class PropertyInfoResource implements IMCPResource {
 	async handler(uri: URL) {
 		try {
 			const metadata = await this.ga4Client.getPropertyMetadata();
+
+			// Extract only the essential information
+			const dimensions = metadata.dimensions?.map((dimension) => ({
+				name: dimension.apiName,
+				description: dimension.description,
+				type: dimension.category,
+			}));
+			const metrics = metadata.metrics?.map((metric) => ({
+				name: metric.apiName,
+				description: metric.description,
+				type: metric.category,
+			}));
+			const comparisons = metadata.comparisons?.map((comparison) => ({
+				name: comparison.apiName,
+				description: comparison.description,
+			}));
+
+			const propertyInfo = {
+				dimensions,
+				metrics,
+				comparisons,
+			};
+
 			return {
 				contents: [
 					{
 						uri: uri.href,
-						text: JSON.stringify(metadata, null, 2),
+						text: JSON.stringify(propertyInfo, null, 2),
 						mimeType: "application/json",
 					},
 				],
