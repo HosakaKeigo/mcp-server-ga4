@@ -24,10 +24,8 @@ export class GA4Client {
 		const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 		this.propertyId = process.env.GA_PROPERTY_ID || "";
 
-		if (!clientEmail || !privateKey || !this.propertyId) {
+		if (!this.propertyId) {
 			console.error("Missing required environment variables:");
-			console.error("- GOOGLE_CLIENT_EMAIL:", clientEmail ? "Set" : "Missing");
-			console.error("- GOOGLE_PRIVATE_KEY:", privateKey ? "Set" : "Missing");
 			console.error("- GA_PROPERTY_ID:", this.propertyId ? "Set" : "Missing");
 			throw new Error(
 				"Missing required environment variables for GA4 client. Please check .env file.",
@@ -35,12 +33,17 @@ export class GA4Client {
 		}
 
 		try {
-			this.client = new BetaAnalyticsDataClient({
-				credentials: {
-					client_email: clientEmail,
-					private_key: privateKey,
-				},
-			});
+			if (clientEmail && privateKey) {
+				this.client = new BetaAnalyticsDataClient({
+					credentials: {
+						client_email: clientEmail,
+						private_key: privateKey,
+					},
+				})
+			} else {
+				// fallback to application default credentials
+				this.client = new BetaAnalyticsDataClient();
+			}
 			console.error(
 				"GA4 client initialized successfully with property ID:",
 				this.propertyId,
@@ -193,7 +196,7 @@ export class GA4Client {
 	) {
 		console.error(
 			`Getting events from ${startDate} to ${endDate}` +
-				`${eventName ? ` for event: ${eventName}` : ""} (limit: ${limit}, offset: ${offset})`,
+			`${eventName ? ` for event: ${eventName}` : ""} (limit: ${limit}, offset: ${offset})`,
 		);
 
 		const config: google.analytics.data.v1beta.IRunReportRequest = {

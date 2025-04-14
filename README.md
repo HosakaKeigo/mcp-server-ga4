@@ -58,6 +58,11 @@ cp .env.example .env
 # GA_PROPERTY_ID=your-ga4-property-id
 ```
 
+### Auth
+If `GOOGLE_CLIENT_EMAIL` and `GOOGLE_PRIVATE_KEY` are set, the server will authenticate with the service account. If not, it will use the default credentials.
+
+Make sure your project enables the Google Analytics API and that your service account has the necessary permissions.（`https://www.googleapis.com/auth/analytics.readonly`）
+
 ### Build and Run
 
 ```bash
