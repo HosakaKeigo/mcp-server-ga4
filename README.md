@@ -61,7 +61,19 @@ cp .env.example .env
 ### Auth
 If `GOOGLE_CLIENT_EMAIL` and `GOOGLE_PRIVATE_KEY` are set, the server will authenticate with the service account. If not, it will use the default credentials.
 
-Make sure your project enables the Google Analytics API and that your service account has the necessary permissions.（`https://www.googleapis.com/auth/analytics.readonly`）
+Make sure your project enables the **Google Analytics API** and that your service account has the necessary permissions.（`https://www.googleapis.com/auth/analytics.readonly`）
+
+Here's how to set up Google Application Default Credentials:
+
+1. Install the Google Cloud SDK.
+2. Run the following command to authenticate:
+
+```bash
+gcloud auth application-default login --scopes=openid,https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/analytics.readonly
+
+# If you want to set a quota project
+gcloud auth application-default set-quota-project <my-quota-project>
+```
 
 ### Build and Run
 
