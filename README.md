@@ -98,6 +98,7 @@ Add the following to your `claude_desktop_config.json` file:
       "command": "node",
       "args": ["/path/to/mcp-server-ga4/dist/index.js"],
       "env": {
+        "GOOGLE_PROJECT_ID": "your-project-id",
         "GOOGLE_CLIENT_EMAIL": "your-service-account-email@example.iam.gserviceaccount.com",
         "GOOGLE_PRIVATE_KEY": "your-private-key",
         "GA_PROPERTY_ID": "your-ga4-property-id"
@@ -116,6 +117,7 @@ If you want to use the default credentials, set `GOOGLE_APPLICATION_CREDENTIALS`
       "command": "node",
       "args": ["/path/to/mcp-server-ga4/dist/index.js"],
       "env": {
+        "GOOGLE_PROJECT_ID": "your-project-id",
         "GA_PROPERTY_ID": "your-ga4-property-id",
         "GOOGLE_APPLICATION_CREDENTIALS": "/path/to/your/credentials.json"
       }
