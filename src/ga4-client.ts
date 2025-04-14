@@ -23,10 +23,12 @@ export class GA4Client {
 		const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
 		const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 		this.propertyId = process.env.GA_PROPERTY_ID || "";
+		const projectId = process.env.GOOGLE_PROJECT_ID;
 
-		if (!this.propertyId) {
+		if (!this.propertyId || !projectId) {
 			console.error("Missing required environment variables:");
 			console.error("- GA_PROPERTY_ID:", this.propertyId ? "Set" : "Missing");
+			console.error("- GOOGLE_PROJECT_ID:", projectId ? "Set" : "Missing");
 			throw new Error(
 				"Missing required environment variables for GA4 client. Please check .env file.",
 			);
@@ -35,14 +37,18 @@ export class GA4Client {
 		try {
 			if (clientEmail && privateKey) {
 				this.client = new BetaAnalyticsDataClient({
+					projectId,
 					credentials: {
 						client_email: clientEmail,
 						private_key: privateKey,
 					},
 				})
 			} else {
+				console.error(`Missing credentials for GA4 client. Falling back to default credentials. Project ID: ${projectId}`);
 				// fallback to application default credentials
-				this.client = new BetaAnalyticsDataClient();
+				this.client = new BetaAnalyticsDataClient({
+					projectId,
+				});
 			}
 			console.error(
 				"GA4 client initialized successfully with property ID:",

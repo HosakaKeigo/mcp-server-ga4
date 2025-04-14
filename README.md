@@ -107,6 +107,23 @@ Add the following to your `claude_desktop_config.json` file:
 }
 ```
 
+If you want to use the default credentials, set `GOOGLE_APPLICATION_CREDENTIALS` in your environment:
+
+```json
+{
+  "mcpServers": {
+    "ga4": {
+      "command": "node",
+      "args": ["/path/to/mcp-server-ga4/dist/index.js"],
+      "env": {
+        "GA_PROPERTY_ID": "your-ga4-property-id",
+        "GOOGLE_APPLICATION_CREDENTIALS": "/path/to/your/credentials.json"
+      }
+    }
+  }
+}
+```
+
 ### Filtering
 
 You can use the `filter` parameter with all tools to narrow down results:
