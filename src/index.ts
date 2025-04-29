@@ -9,14 +9,17 @@ import { registerTools } from "./tools/index.js";
  * Main class for the MCP GA4 server
  */
 async function main() {
+	const SERVER_NAME = "mcp-server-ga4";
+	const SERVER_VERSION = "1.0.0";
+
 	try {
 		// Initialize GA4 client
 		const ga4Client = new GA4Client();
 
 		// Create an instance of the MCP server
 		const server = new McpServer({
-			name: "mcp-server-ga4",
-			version: "0.0.1",
+			name: SERVER_NAME,
+			version: SERVER_VERSION,
 			capabilities: {
 				resources: {},
 				tools: {},
@@ -35,9 +38,9 @@ async function main() {
 
 		// Initialize and connect Stdio transport
 		const transport = new StdioServerTransport();
-		console.error(`mcp-server-ga4 v0.0.1 starting...`);
+		console.error(`${SERVER_NAME} v${SERVER_VERSION} starting...`);
 		await server.connect(transport);
-		console.error(`mcp-server-ga4 connected and ready`);
+		console.error(`${SERVER_NAME} connected and ready`);
 	} catch (error) {
 		console.error("Fatal error initializing server:", error);
 		process.exit(1);

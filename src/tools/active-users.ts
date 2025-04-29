@@ -14,7 +14,7 @@ export class ActiveUsersTool implements IMCPTool {
 	 * Constructor
 	 * @param ga4Client GA4 client instance
 	 */
-	constructor(ga4Client: GA4Client) {
+	constructor(private readonly ga4Client: GA4Client) {
 		this.ga4Client = ga4Client;
 	}
 

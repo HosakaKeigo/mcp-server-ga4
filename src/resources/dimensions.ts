@@ -7,6 +7,10 @@ import { GA4_DIMENSIONS } from "./ga4-dimensions.js";
  */
 export class DimensionsResource implements IMCPResource {
 	/**
+	 * Resource name
+	 */
+	readonly name = "ga4-dimensions";
+	/**
 	 * Resource URI
 	 */
 	readonly uri = "ga4://dimensions";
