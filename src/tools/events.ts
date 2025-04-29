@@ -7,34 +7,34 @@ import { handleError } from "../utils/error-handler.js";
 import { eventsSchema, formatGAResponse } from "../utils/ga4.js";
 
 /**
- * イベント取得ツールクラス
+ * Event retrieval tool class
  */
 export class EventsTool implements IMCPTool {
 	/**
-	 * GA4クライアントインスタンス
+	 * GA4 client instance
 	 */
 	private ga4Client: GA4Client;
 
 	/**
-	 * コンストラクタ
-	 * @param ga4Client GA4クライアントインスタンス
+	 * Constructor
+	 * @param ga4Client GA4 client instance
 	 */
 	constructor(ga4Client: GA4Client) {
 		this.ga4Client = ga4Client;
 	}
 
 	/**
-	 * ツール名
+	 * Tool name
 	 */
 	readonly name = "get-events";
 
 	/**
-	 * ツールの説明
+	 * Tool description
 	 */
 	readonly description = "Get event metrics for a specific date range";
 
 	/**
-	 * パラメータ定義
+	 * Parameter definitions
 	 */
 	readonly parameters = {
 		startDate: z.string().describe("Start date in YYYY-MM-DD format"),
@@ -59,7 +59,7 @@ export class EventsTool implements IMCPTool {
 	} as const;
 
 	/**
-	 * ツール実行メソッド
+	 * Tool execution method
 	 */
 	async execute(args: InferZodParams<typeof this.parameters>): Promise<{
 		content: TextContent[];
@@ -75,7 +75,7 @@ export class EventsTool implements IMCPTool {
 				filter,
 			} = args;
 
-			// 入力パラメータの検証
+			// Validate input parameters
 			const validParams = eventsSchema.parse({
 				startDate,
 				endDate,
@@ -85,7 +85,7 @@ export class EventsTool implements IMCPTool {
 				filter,
 			});
 
-			// GA4からデータ取得
+			// Retrieve data from GA4
 			const response = await this.ga4Client.getEvents(
 				validParams.startDate,
 				validParams.endDate,
@@ -95,7 +95,7 @@ export class EventsTool implements IMCPTool {
 				validParams.filter as SimpleFilter,
 			);
 
-			// レスポンスのフォーマット
+			// Format the response
 			const formattedResponse = formatGAResponse(
 				response,
 				validParams.limit,

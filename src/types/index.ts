@@ -2,41 +2,41 @@ import type { TextContent } from "@modelcontextprotocol/sdk/types.js";
 import type { z } from "zod";
 
 /**
- * Zodスキーマから型を抽出するユーティリティ型
+ * Utility type to extract types from Zod schemas
  */
 export type InferZodParams<T extends Record<string, z.ZodType>> = {
 	[K in keyof T]: T[K] extends z.ZodOptional<infer U>
-		? z.infer<U> | undefined
-		: T[K] extends z.ZodDefault<infer V>
+			? z.infer<U> | undefined
+			: T[K] extends z.ZodDefault<infer V>
 			? z.infer<V>
 			: z.infer<T[K]>;
 };
 
 /**
- * MCPツールのインターフェース
+ * Interface for MCP tools
  */
 export interface IMCPTool<
 	TParams extends Record<string, z.ZodType> = Record<string, z.ZodType>,
 > {
 	/**
-	 * ツール名
+	 * Tool name
 	 */
 	readonly name: string;
 
 	/**
-	 * ツールの説明
+	 * Tool description
 	 */
 	readonly description: string;
 
 	/**
-	 * パラメータの定義
+	 * Parameter definitions
 	 */
 	readonly parameters: TParams;
 
 	/**
-	 * ツールを実行する
-	 * @param args パラメータ
-	 * @returns 実行結果
+	 * Execute the tool
+	 * @param args Parameters
+	 * @returns Execution result
 	 */
 	execute(args: InferZodParams<TParams>): Promise<{
 		content: TextContent[];
@@ -45,21 +45,21 @@ export interface IMCPTool<
 }
 
 /**
- * MCPリソースのインターフェース
+ * Interface for MCP resources
  */
 export interface IMCPResource {
 	/**
-	 * リソース名
+	 * Resource name
 	 */
 	readonly name: string;
 
 	/**
-	 * リソースURI
+	 * Resource URI
 	 */
 	readonly uri: string;
 
 	/**
-	 * リソースハンドラー
+	 * Resource handler
 	 */
 	handler(uri: URL): Promise<{
 		contents: {
@@ -72,23 +72,23 @@ export interface IMCPResource {
 }
 
 /**
- * MCPプロンプトのインターフェース
+ * Interface for MCP prompts
  */
 export interface IMCPPrompt<
 	TParams extends Record<string, z.ZodType> = Record<string, z.ZodType>,
 > {
 	/**
-	 * プロンプト名
+	 * Prompt name
 	 */
 	readonly name: string;
 
 	/**
-	 * パラメータの定義
+	 * Parameter definitions
 	 */
 	readonly schema: TParams;
 
 	/**
-	 * プロンプトハンドラー
+	 * Prompt handler
 	 */
 	handler(args: InferZodParams<TParams>): {
 		messages: {

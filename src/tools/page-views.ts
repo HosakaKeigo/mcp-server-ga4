@@ -7,34 +7,34 @@ import { handleError } from "../utils/error-handler.js";
 import { formatGAResponse, pageViewsSchema } from "../utils/ga4.js";
 
 /**
- * ページビュー取得ツールクラス
+ * Page Views Retrieval Tool Class
  */
 export class PageViewsTool implements IMCPTool {
 	/**
-	 * GA4クライアントインスタンス
+	 * GA4 client instance
 	 */
 	private ga4Client: GA4Client;
 
 	/**
-	 * コンストラクタ
-	 * @param ga4Client GA4クライアントインスタンス
+	 * Constructor
+	 * @param ga4Client GA4 client instance
 	 */
 	constructor(ga4Client: GA4Client) {
 		this.ga4Client = ga4Client;
 	}
 
 	/**
-	 * ツール名
+	 * Tool name
 	 */
 	readonly name = "get-page-views";
 
 	/**
-	 * ツールの説明
+	 * Tool description
 	 */
 	readonly description = "Get page view metrics for a specific date range";
 
 	/**
-	 * パラメータ定義
+	 * Parameter definitions
 	 */
 	readonly parameters = {
 		startDate: z.string().describe("Start date in YYYY-MM-DD format"),
@@ -60,7 +60,7 @@ export class PageViewsTool implements IMCPTool {
 	} as const;
 
 	/**
-	 * ツール実行メソッド
+	 * Tool execution method
 	 */
 	async execute(args: InferZodParams<typeof this.parameters>): Promise<{
 		content: TextContent[];
@@ -84,7 +84,7 @@ export class PageViewsTool implements IMCPTool {
 				offset,
 			});
 
-			// 入力パラメータの検証
+			// Validate input parameters
 			const validParams = pageViewsSchema.parse({
 				startDate,
 				endDate,
@@ -94,7 +94,7 @@ export class PageViewsTool implements IMCPTool {
 				filter,
 			});
 
-			// GA4からデータ取得
+			// Retrieve data from GA4
 			const response = await this.ga4Client.getPageViews(
 				validParams.startDate,
 				validParams.endDate,
@@ -104,7 +104,7 @@ export class PageViewsTool implements IMCPTool {
 				validParams.filter as SimpleFilter,
 			);
 
-			// レスポンスのフォーマット
+			// Format the response
 			const formattedResponse = formatGAResponse(
 				response,
 				validParams.limit,

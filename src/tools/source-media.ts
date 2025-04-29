@@ -7,35 +7,35 @@ import { handleError } from "../utils/error-handler.js";
 import { formatGAResponse, sourceMediaSchema } from "../utils/ga4.js";
 
 /**
- * ソースメディア取得ツールクラス
+ * Source Media Retrieval Tool Class
  */
 export class SourceMediaTool implements IMCPTool {
 	/**
-	 * GA4クライアントインスタンス
+	 * GA4 client instance
 	 */
 	private ga4Client: GA4Client;
 
 	/**
-	 * コンストラクタ
-	 * @param ga4Client GA4クライアントインスタンス
+	 * Constructor
+	 * @param ga4Client GA4 client instance
 	 */
 	constructor(ga4Client: GA4Client) {
 		this.ga4Client = ga4Client;
 	}
 
 	/**
-	 * ツール名
+	 * Tool name
 	 */
 	readonly name = "get-source-media";
 
 	/**
-	 * ツールの説明
+	 * Tool description
 	 */
 	readonly description =
 		"Get traffic source and medium data for a specific date range";
 
 	/**
-	 * パラメータ定義
+	 * Parameter definitions
 	 */
 	readonly parameters = {
 		startDate: z.string().describe("Start date in YYYY-MM-DD format"),
@@ -56,7 +56,7 @@ export class SourceMediaTool implements IMCPTool {
 	} as const;
 
 	/**
-	 * ツール実行メソッド
+	 * Tool execution method
 	 */
 	async execute(args: InferZodParams<typeof this.parameters>): Promise<{
 		content: TextContent[];
@@ -65,7 +65,7 @@ export class SourceMediaTool implements IMCPTool {
 		try {
 			const { startDate, endDate, limit = 50, offset = 0, filter } = args;
 
-			// 入力パラメータの検証
+			// Validate input parameters
 			const validParams = sourceMediaSchema.parse({
 				startDate,
 				endDate,
@@ -74,7 +74,7 @@ export class SourceMediaTool implements IMCPTool {
 				filter,
 			});
 
-			// GA4からデータ取得
+			// Retrieve data from GA4
 			const response = await this.ga4Client.getSourceMedia(
 				validParams.startDate,
 				validParams.endDate,
@@ -83,7 +83,7 @@ export class SourceMediaTool implements IMCPTool {
 				validParams.filter as SimpleFilter,
 			);
 
-			// レスポンスのフォーマット
+			// Format the response
 			const formattedResponse = formatGAResponse(
 				response,
 				validParams.limit,

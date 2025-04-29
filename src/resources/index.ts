@@ -6,8 +6,8 @@ import { MetricsResource } from "./metrics.js";
 import { PropertyInfoResource } from "./property-info.js";
 
 /**
- * リソース登録関数
- * すべてのリソースをサーバーに登録
+ * Resource registration function
+ * Register all resources to the server
  */
 export function registerResources(server: McpServer, ga4Client: GA4Client) {
 	const ALL_RESOURCES = [

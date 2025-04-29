@@ -3,21 +3,21 @@ import { handleError } from "../utils/error-handler.js";
 import { GA4_METRICS } from "./ga4-metrics.js";
 
 /**
- * GA4メトリクス一覧リソースクラス
+ * GA4 metrics list resource class
  */
 export class MetricsResource implements IMCPResource {
 	/**
-	 * リソース名
+	 * Resource name
 	 */
 	readonly name = "ga4-metrics";
 
 	/**
-	 * リソースURI
+	 * Resource URI
 	 */
 	readonly uri = "ga4://metrics";
 
 	/**
-	 * リソースハンドラー
+	 * Resource handler
 	 */
 	async handler(uri: URL) {
 		try {

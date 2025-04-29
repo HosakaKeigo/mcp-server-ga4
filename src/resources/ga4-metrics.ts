@@ -1,89 +1,89 @@
-export const GA4_METRICS = `| API 名                              | 説明                                                                   |
+export const GA4_METRICS = `| API Name                              | Description                                                                   |
 | ----------------------------------- | ---------------------------------------------------------------------- |
-| active1DayUsers                     | 1日以内利用の個別アクティブユーザー数（最終日含む）                    |
-| active28DayUsers                    | 28日以内利用の個別アクティブユーザー数（最終日含む）                   |
-| active7DayUsers                     | 7日以内利用の個別アクティブユーザー数（最終日含む）                    |
-| activeUsers                         | サイト/アプリアクセスの個別ユーザー数                                  |
-| adUnitExposure                      | 広告ユニット表示時間（ミリ秒）                                         |
-| addToCarts                          | カートへのアイテム追加回数                                             |
-| advertiserAdClicks                  | 広告クリック数（統合クリック含む）                                     |
-| advertiserAdCost                    | 広告費用合計（統合費用含む）                                           |
-| advertiserAdCostPerClick            | 広告クリック単価（CPC）                                                |
-| advertiserAdCostPerKeyEvent         | 1キーイベントあたりの広告費用                                          |
-| advertiserAdImpressions             | 広告表示回数（統合表示含む）                                           |
-| averagePurchaseRevenue              | 平均購入収益（トランザクショングループ）                               |
-| averagePurchaseRevenuePerPayingUser | 有料ユーザー平均購入収益 (ARPPU)                                       |
-| averagePurchaseRevenuePerUser       | ユーザーあたり平均購入収益                                             |
-| averageRevenuePerUser               | アクティブユーザー平均収益 (ARPU)                                      |
-| averageSessionDuration              | 平均セッション継続時間（秒）                                           |
-| bounceRate                          | 直帰率（小数）                                                         |
-| cartToViewRate                      | 表示後カート追加率（小数）                                             |
-| checkouts                           | 決済開始回数（begin_checkoutイベント）                                 |
-| cohortActiveUsers                   | コホート期間内のアクティブユーザー数                                   |
-| cohortTotalUsers                    | コホート内総ユーザー数（期間選択後減少）                               |
-| crashAffectedUsers                  | クラッシュ報告ユーザー数                                               |
-| crashFreeUsersRate                  | クラッシュなしユーザー割合（小数）                                     |
-| dauPerMau                           | 30日間中1日利用率（小数）                                              |
-| dauPerWau                           | 7日間中1日利用率（小数）                                               |
-| ecommercePurchases                  | 完了した購入数（purchaseイベント）                                     |
-| engagedSessions                     | エンゲージメントセッション数（10秒超/キーイベント/≥2スクリーンビュー） |
-| engagementRate                      | エンゲージメント率（小数）                                             |
-| eventCount                          | イベント総数                                                           |
-| eventCountPerUser                   | ユーザーあたり平均イベント数                                           |
-| eventValue                          | イベントvalueパラメータ合計                                            |
-| eventsPerSession                    | セッションあたり平均イベント数                                         |
-| firstTimePurchaserRate              | 初回購入者率（小数）                                                   |
-| firstTimePurchasers                 | 初回購入者数                                                           |
-| firstTimePurchasersPerNewUser       | 新規ユーザーあたり初回購入者平均数                                     |
-| grossItemRevenue                    | アイテム総収益（税・送料・払い戻し除く）                               |
-| grossPurchaseRevenue                | 購入による総収益（purchase等）                                         |
-| itemDiscountAmount                  | アイテム割引額（discountパラメータ）                                   |
-| itemListClickEvents                 | アイテムリストクリックイベント数 (select_item)                         |
-| itemListClickThroughRate            | アイテムリストクリック率（小数）                                       |
-| itemListViewEvents                  | アイテムリストビューイベント数 (view_item_list)                        |
-| itemPromotionClickThroughRate       | プロモーションクリック率（小数）                                       |
-| itemRefundAmount                    | アイテム払い戻し額（refundイベント）                                   |
-| itemRevenue                         | アイテム収益（購入収益-払い戻し）                                      |
-| itemViewEvents                      | アイテムビューイベント数 (view_item)                                   |
-| itemsAddedToCart                    | カートに追加されたアイテム数（add_to_cart内）                          |
-| itemsCheckedOut                     | 決済されたアイテム数（begin_checkout内）                               |
-| itemsClickedInList                  | リスト内クリックアイテム数 (select_item)                               |
-| itemsClickedInPromotion             | プロモーション内クリックアイテム数 (select_promotion)                  |
-| itemsPurchased                      | 購入されたアイテム数 (purchaseイベント)                                |
-| itemsViewed                         | アイテム閲覧ユニット数 (view_item)                                     |
-| itemsViewedInList                   | リスト内閲覧アイテム数 (view_item_list)                                |
-| itemsViewedInPromotion              | プロモーション内閲覧アイテム数 (view_promotion)                        |
-| keyEvents                           | キーイベント数（マーク済み）                                           |
-| newUsers                            | 新規ユーザー数（first_open/first_visit）                               |
-| organicGoogleSearchAveragePosition  | Googleオーガニック平均掲載順位（有効リンク必要）                       |
-| organicGoogleSearchClickThroughRate | Googleオーガニッククリック率（小数、有効リンク必要）                   |
-| organicGoogleSearchClicks           | Googleオーガニッククリック数（有効リンク必要）                         |
-| organicGoogleSearchImpressions      | Googleオーガニック表示回数（有効リンク必要）                           |
-| promotionClicks                     | プロモーションクリック数 (select_promotion)                            |
-| promotionViews                      | プロモーションビュー数 (view_promotion)                                |
-| publisherAdClicks                   | パブリッシャー広告クリック数 (ad_click)                                |
-| publisherAdImpressions              | パブリッシャー広告表示回数 (ad_impression)                             |
-| purchaseRevenue                     | 購入収益（払い戻し差引後、valueパラメータ）                            |
-| purchaseToViewRate                  | 表示後購入率（小数）                                                   |
-| purchaserRate                       | 購入者率（小数）                                                       |
-| refundAmount                        | 払い戻し額（refund/app_store_refundイベント）                          |
-| returnOnAdSpend                     | 広告費用対効果（総収益÷広告費用）                                      |
-| screenPageViews                     | 画面/ページビュー数（screen_view+page_view）                           |
-| screenPageViewsPerSession           | セッションあたりのページビュー数                                       |
-| screenPageViewsPerUser              | ユーザーあたりのページビュー数                                         |
-| scrolledUsers                       | 90%以上スクロールユーザー数                                            |
-| sessionKeyEventRate                 | キーイベント発生セッション率（小数）                                   |
-| sessions                            | セッション数（session_startイベント）                                  |
-| sessionsPerUser                     | ユーザーあたり平均セッション数                                         |
-| shippingAmount                      | 送料（shippingパラメータ）                                             |
-| taxAmount                           | 税額（taxパラメータ）                                                  |
-| totalAdRevenue                      | 広告収入合計（AdMob＋サードパーティ）                                  |
-| totalPurchasers                     | 総購入者数（期間内購入ユーザー数）                                     |
-| totalRevenue                        | 総収益（購入+定期+広告収益-払い戻し）                                  |
-| totalUsers                          | 合計ユーザー数（1イベント以上記録）                                    |
-| transactions                        | トランザクション数（purchase等のイベント）                             |
-| transactionsPerPurchaser            | 購入者あたり平均トランザクション数                                     |
-| userEngagementDuration              | ユーザーフォアグラウンド動作時間合計（秒）                             |
-| userKeyEventRate                    | キーイベントトリガーユーザー率（小数）                                 |
-| wauPerMau                           | 30日間中7日間利用率（小数）                                            |
+| active1DayUsers                     | Number of unique active users within 1 day (including the last day)                    |
+| active28DayUsers                    | Number of unique active users within 28 days (including the last day)                   |
+| active7DayUsers                     | Number of unique active users within 7 days (including the last day)                    |
+| activeUsers                         | Number of unique users accessing the site/app                                  |
+| adUnitExposure                      | Ad unit display time (milliseconds)                                         |
+| addToCarts                          | Number of times items were added to the cart                                             |
+| advertiserAdClicks                  | Number of ad clicks (including integrated clicks)                                     |
+| advertiserAdCost                    | Total ad cost (including integrated cost)                                           |
+| advertiserAdCostPerClick            | Cost per click (CPC)                                                |
+| advertiserAdCostPerKeyEvent         | Ad cost per key event                                          |
+| advertiserAdImpressions             | Number of ad impressions (including integrated impressions)                                           |
+| averagePurchaseRevenue              | Average purchase revenue (transaction group)                               |
+| averagePurchaseRevenuePerPayingUser | Average purchase revenue per paying user (ARPPU)                                       |
+| averagePurchaseRevenuePerUser       | Average purchase revenue per user                                             |
+| averageRevenuePerUser               | Average revenue per active user (ARPU)                                      |
+| averageSessionDuration              | Average session duration (seconds)                                           |
+| bounceRate                          | Bounce rate (decimal)                                                         |
+| cartToViewRate                      | Cart addition rate after viewing (decimal)                                             |
+| checkouts                           | Number of times checkout was started (begin_checkout event)                                 |
+| cohortActiveUsers                   | Number of active users within the cohort period                                   |
+| cohortTotalUsers                    | Total number of users within the cohort (decreases after period selection)                               |
+| crashAffectedUsers                  | Number of users reporting crashes                                               |
+| crashFreeUsersRate                  | Percentage of users without crashes (decimal)                                     |
+| dauPerMau                           | 1-day usage rate within 30 days (decimal)                                              |
+| dauPerWau                           | 1-day usage rate within 7 days (decimal)                                               |
+| ecommercePurchases                  | Number of completed purchases (purchase event)                                     |
+| engagedSessions                     | Number of engagement sessions (over 10 seconds/key event/≥2 screen views) |
+| engagementRate                      | Engagement rate (decimal)                                             |
+| eventCount                          | Total number of events                                                           |
+| eventCountPerUser                   | Average number of events per user                                           |
+| eventValue                          | Total value of event value parameter                                            |
+| eventsPerSession                    | Average number of events per session                                         |
+| firstTimePurchaserRate              | First-time purchaser rate (decimal)                                                   |
+| firstTimePurchasers                 | Number of first-time purchasers                                                           |
+| firstTimePurchasersPerNewUser       | Average number of first-time purchasers per new user                                     |
+| grossItemRevenue                    | Total item revenue (excluding tax, shipping, and refunds)                               |
+| grossPurchaseRevenue                | Total revenue from purchases (including purchase events)                                         |
+| itemDiscountAmount                  | Item discount amount (discount parameter)                                   |
+| itemListClickEvents                 | Number of item list click events (select_item)                         |
+| itemListClickThroughRate            | Item list click-through rate (decimal)                                       |
+| itemListViewEvents                  | Number of item list view events (view_item_list)                        |
+| itemPromotionClickThroughRate       | Promotion click-through rate (decimal)                                       |
+| itemRefundAmount                    | Item refund amount (refund event)                                   |
+| itemRevenue                         | Item revenue (purchase revenue - refunds)                                      |
+| itemViewEvents                      | Number of item view events (view_item)                                   |
+| itemsAddedToCart                    | Number of items added to the cart (within add_to_cart)                          |
+| itemsCheckedOut                     | Number of items checked out (within begin_checkout)                               |
+| itemsClickedInList                  | Number of items clicked in the list (select_item)                               |
+| itemsClickedInPromotion             | Number of items clicked in the promotion (select_promotion)                  |
+| itemsPurchased                      | Number of items purchased (purchase event)                                |
+| itemsViewed                         | Number of item view units (view_item)                                     |
+| itemsViewedInList                   | Number of items viewed in the list (view_item_list)                                |
+| itemsViewedInPromotion              | Number of items viewed in the promotion (view_promotion)                        |
+| keyEvents                           | Number of key events (marked)                                           |
+| newUsers                            | Number of new users (first_open/first_visit)                               |
+| organicGoogleSearchAveragePosition  | Average position in Google organic search (requires valid link)                       |
+| organicGoogleSearchClickThroughRate | Google organic click-through rate (decimal, requires valid link)                   |
+| organicGoogleSearchClicks           | Number of Google organic clicks (requires valid link)                         |
+| organicGoogleSearchImpressions      | Number of Google organic impressions (requires valid link)                           |
+| promotionClicks                     | Number of promotion clicks (select_promotion)                            |
+| promotionViews                      | Number of promotion views (view_promotion)                                |
+| publisherAdClicks                   | Number of publisher ad clicks (ad_click)                                |
+| publisherAdImpressions              | Number of publisher ad impressions (ad_impression)                             |
+| purchaseRevenue                     | Purchase revenue (after deducting refunds, value parameter)                            |
+| purchaseToViewRate                  | Purchase rate after viewing (decimal)                                                   |
+| purchaserRate                       | Purchaser rate (decimal)                                                       |
+| refundAmount                        | Refund amount (refund/app_store_refund event)                          |
+| returnOnAdSpend                     | Return on ad spend (total revenue ÷ ad cost)                                      |
+| screenPageViews                     | Number of screen/page views (screen_view + page_view)                           |
+| screenPageViewsPerSession           | Number of page views per session                                       |
+| screenPageViewsPerUser              | Number of page views per user                                         |
+| scrolledUsers                       | Number of users who scrolled more than 90%                                            |
+| sessionKeyEventRate                 | Session rate with key events (decimal)                                   |
+| sessions                            | Number of sessions (session_start event)                                  |
+| sessionsPerUser                     | Average number of sessions per user                                         |
+| shippingAmount                      | Shipping amount (shipping parameter)                                             |
+| taxAmount                           | Tax amount (tax parameter)                                                  |
+| totalAdRevenue                      | Total ad revenue (AdMob + third-party)                                  |
+| totalPurchasers                     | Total number of purchasers (number of users who made purchases within the period)                                     |
+| totalRevenue                        | Total revenue (purchases + subscriptions + ad revenue - refunds)                                  |
+| totalUsers                          | Total number of users (recorded at least one event)                                    |
+| transactions                        | Number of transactions (purchase events, etc.)                             |
+| transactionsPerPurchaser            | Average number of transactions per purchaser                                     |
+| userEngagementDuration              | Total user foreground operation time (seconds)                             |
+| userKeyEventRate                    | User rate triggering key events (decimal)                                 |
+| wauPerMau                           | 7-day usage rate within 30 days (decimal)                                            |
 |`;

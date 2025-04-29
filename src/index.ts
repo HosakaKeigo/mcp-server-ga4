@@ -5,19 +5,18 @@ import { registerPrompts } from "./prompts/index.js";
 import { registerResources } from "./resources/index.js";
 import { registerTools } from "./tools/index.js";
 
-// サーバー情報
-const SERVER_NAME = "mcp-server-ga4";
-const SERVER_VERSION = "0.0.1";
-
 /**
- * MCP GA4サーバーのメインクラス
+ * Main class for the MCP GA4 server
  */
 async function main() {
+	const SERVER_NAME = "mcp-server-ga4";
+	const SERVER_VERSION = "1.0.0";
+
 	try {
-		// GA4クライアントの初期化
+		// Initialize GA4 client
 		const ga4Client = new GA4Client();
 
-		// MCPサーバーのインスタンス作成
+		// Create an instance of the MCP server
 		const server = new McpServer({
 			name: SERVER_NAME,
 			version: SERVER_VERSION,
@@ -28,16 +27,16 @@ async function main() {
 			},
 		});
 
-		// ツールの登録
+		// Register tools
 		registerTools(server, ga4Client);
 
-		// リソースの登録
+		// Register resources
 		registerResources(server, ga4Client);
 
-		// プロンプトの登録
+		// Register prompts
 		registerPrompts(server);
 
-		// Stdioトランスポートの初期化と接続
+		// Initialize and connect Stdio transport
 		const transport = new StdioServerTransport();
 		console.error(`${SERVER_NAME} v${SERVER_VERSION} starting...`);
 		await server.connect(transport);

@@ -8,8 +8,8 @@ import { SourceMediaTool } from "./source-media.js";
 import { UserBehaviorTool } from "./user-behavior.js";
 
 /**
- * ツール登録関数
- * すべてのツールをサーバーに登録
+ * Tool registration function
+ * Register all tools to the server
  */
 export function registerTools(server: McpServer, ga4Client: GA4Client) {
 	const ALL_TOOLS: IMCPTool[] = [
