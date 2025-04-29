@@ -9,15 +9,15 @@ import {
 dotenv.config();
 
 /**
- * GA4データクライアントの初期化と管理を行うクラス
+ * Class for initializing and managing the GA4 data client
  */
 export class GA4Client {
 	private client: BetaAnalyticsDataClient;
 	private propertyId: string;
 
 	/**
-	 * GA4クライアントのコンストラクタ
-	 * 環境変数から認証情報とプロパティIDを取得
+	 * Constructor for the GA4 client
+	 * Retrieves authentication information and property ID from environment variables
 	 */
 	constructor() {
 		const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
@@ -61,8 +61,8 @@ export class GA4Client {
 	}
 
 	/**
-	 * レポート実行のためのヘルパーメソッド
-	 * GA4 APIは一度に全データを取得するため、クライアント側でページネーションを実装
+	 * Helper method for running reports
+	 * The GA4 API retrieves all data at once, so pagination is implemented on the client side
 	 */
 	async runReport(config: google.analytics.data.v1beta.IRunReportRequest) {
 		try {
@@ -85,13 +85,13 @@ export class GA4Client {
 	}
 
 	/**
-	 * ページビュー指標取得
-	 * @param startDate 開始日
-	 * @param endDate 終了日
-	 * @param dimensions ディメンション配列
-	 * @param limit 結果の最大行数
-	 * @param offset 開始オフセット
-	 * @param filter 結果をフィルターする条件
+	 * Retrieve page view metrics
+	 * @param startDate Start date
+	 * @param endDate End date
+	 * @param dimensions Array of dimensions
+	 * @param limit Maximum number of results
+	 * @param offset Starting offset
+	 * @param filter Conditions to filter the results
 	 */
 	async getPageViews(
 		startDate: string,
@@ -107,26 +107,23 @@ export class GA4Client {
 			`(limit: ${limit}, offset: ${offset})`,
 		);
 
-		// dimensions配列の各要素をチェック
 		const validDimensions = dimensions.filter(
 			(dim) => dim && typeof dim === "string",
 		);
 
 		if (validDimensions.length === 0) {
 			console.error(
-				'No valid dimensions provided, using default "hostName" dimension',
+					'No valid dimensions provided, using default "hostName" dimension',
 			);
 			validDimensions.push("hostName");
 		}
 
-		// GA4 APIではlimitが指定されている場合、設定
 		const requestConfig: google.analytics.data.v1beta.IRunReportRequest = {
 			dateRanges: [{ startDate, endDate }],
 			dimensions: validDimensions.map((dimension) => ({ name: dimension })),
 			metrics: [{ name: "screenPageViews" }],
 		};
 
-		// フィルターが存在する場合は適用
 		if (filter) {
 			const filterExpression = convertToFilterExpression(filter);
 			if (filterExpression) {
@@ -134,7 +131,6 @@ export class GA4Client {
 			}
 		}
 
-		// GA4 APIがrowLimitパラメータをサポートしている場合
 		if (limit && limit > 0) {
 			requestConfig.limit = limit;
 		}
@@ -143,12 +139,12 @@ export class GA4Client {
 	}
 
 	/**
-	 * アクティブユーザー指標取得
-	 * @param startDate 開始日
-	 * @param endDate 終了日
-	 * @param limit 結果の最大行数
-	 * @param offset 開始オフセット
-	 * @param filter 結果をフィルターする条件
+	 * Retrieve active user metrics
+	 * @param startDate Start date
+	 * @param endDate End date
+	 * @param limit Maximum number of results
+	 * @param offset Starting offset
+	 * @param filter Conditions to filter the results
 	 */
 	async getActiveUsers(
 		startDate: string,
@@ -167,7 +163,6 @@ export class GA4Client {
 			dimensions: [{ name: "date" }],
 		};
 
-		// フィルターが存在する場合は適用
 		if (filter) {
 			const filterExpression = convertToFilterExpression(filter);
 			if (filterExpression) {
@@ -175,7 +170,6 @@ export class GA4Client {
 			}
 		}
 
-		// GA4 APIがrowLimitパラメータをサポートしている場合
 		if (limit && limit > 0) {
 			requestConfig.limit = limit;
 		}
@@ -184,13 +178,13 @@ export class GA4Client {
 	}
 
 	/**
-	 * イベント指標取得
-	 * @param startDate 開始日
-	 * @param endDate 終了日
-	 * @param eventName イベント名（オプション）
-	 * @param limit 結果の最大行数
-	 * @param offset 開始オフセット
-	 * @param filter 結果をフィルターする条件
+	 * Retrieve event metrics
+	 * @param startDate Start date
+	 * @param endDate End date
+	 * @param eventName Event name (optional)
+	 * @param limit Maximum number of results
+	 * @param offset Starting offset
+	 * @param filter Conditions to filter the results
 	 */
 	async getEvents(
 		startDate: string,
@@ -211,7 +205,6 @@ export class GA4Client {
 			metrics: [{ name: "eventCount" }],
 		};
 
-		// 特定のイベント名が指定されている場合
 		if (eventName) {
 			config.dimensionFilter = {
 				filter: {
@@ -224,11 +217,9 @@ export class GA4Client {
 			};
 		}
 
-		// フィルターが存在する場合は、eventNameと結合して適用
 		if (filter) {
 			const filterExpression = convertToFilterExpression(filter);
 			if (filterExpression) {
-				// すでにeventNameフィルターがある場合は、ANDで結合
 				if (eventName) {
 					config.dimensionFilter = {
 						andGroup: {
@@ -244,7 +235,6 @@ export class GA4Client {
 			}
 		}
 
-		// GA4 APIがrowLimitパラメータをサポートしている場合
 		if (limit && limit > 0) {
 			config.limit = limit;
 		}
@@ -253,12 +243,12 @@ export class GA4Client {
 	}
 
 	/**
-	 * ユーザー行動指標取得
-	 * @param startDate 開始日
-	 * @param endDate 終了日
-	 * @param limit 結果の最大行数
-	 * @param offset 開始オフセット
-	 * @param filter 結果をフィルターする条件
+	 * Retrieve user behavior metrics
+	 * @param startDate Start date
+	 * @param endDate End date
+	 * @param limit Maximum number of results
+	 * @param offset Starting offset
+	 * @param filter Conditions to filter the results
 	 */
 	async getUserBehavior(
 		startDate: string,
@@ -281,7 +271,6 @@ export class GA4Client {
 			dimensions: [{ name: "date" }],
 		};
 
-		// フィルターが存在する場合は適用
 		if (filter) {
 			const filterExpression = convertToFilterExpression(filter);
 			if (filterExpression) {
@@ -289,7 +278,6 @@ export class GA4Client {
 			}
 		}
 
-		// GA4 APIがrowLimitパラメータをサポートしている場合
 		if (limit && limit > 0) {
 			config.limit = limit;
 		}
@@ -298,12 +286,12 @@ export class GA4Client {
 	}
 
 	/**
-	 * ソースメディア情報取得メソッド
-	 * @param startDate 開始日
-	 * @param endDate 終了日
-	 * @param limit 結果の最大行数
-	 * @param offset 開始オフセット
-	 * @param filter 結果をフィルターする条件
+	 * Method to retrieve source media information
+	 * @param startDate Start date
+	 * @param endDate End date
+	 * @param limit Maximum number of results
+	 * @param offset Starting offset
+	 * @param filter Conditions to filter the results
 	 */
 	async getSourceMedia(
 		startDate: string,
@@ -326,7 +314,6 @@ export class GA4Client {
 			],
 		};
 
-		// フィルターが存在する場合は適用
 		if (filter) {
 			const filterExpression = convertToFilterExpression(filter);
 			if (filterExpression) {
@@ -334,7 +321,6 @@ export class GA4Client {
 			}
 		}
 
-		// GA4 APIがrowLimitパラメータをサポートしている場合
 		if (limit && limit > 0) {
 			config.limit = limit;
 		}
@@ -343,7 +329,7 @@ export class GA4Client {
 	}
 
 	/**
-	 * プロパティ情報取得（メタデータ）
+	 * Retrieve property information (metadata)
 	 */
 	async getPropertyMetadata() {
 		try {

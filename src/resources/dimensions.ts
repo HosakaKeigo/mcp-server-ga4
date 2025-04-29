@@ -3,21 +3,16 @@ import { handleError } from "../utils/error-handler.js";
 import { GA4_DIMENSIONS } from "./ga4-dimensions.js";
 
 /**
- * GA4ディメンション一覧リソースクラス
+ * GA4 dimensions list resource class
  */
 export class DimensionsResource implements IMCPResource {
 	/**
-	 * リソース名
-	 */
-	readonly name = "ga4-dimensions";
-
-	/**
-	 * リソースURI
+	 * Resource URI
 	 */
 	readonly uri = "ga4://dimensions";
 
 	/**
-	 * リソースハンドラー
+	 * Resource handler
 	 */
 	async handler(uri: URL) {
 		try {

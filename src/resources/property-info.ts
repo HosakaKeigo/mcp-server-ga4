@@ -3,34 +3,34 @@ import type { IMCPResource } from "../types/index.js";
 import { handleError } from "../utils/error-handler.js";
 
 /**
- * GA4プロパティ情報リソースクラス
+ * GA4 property information resource class
  */
 export class PropertyInfoResource implements IMCPResource {
 	/**
-	 * GA4クライアントインスタンス
+	 * GA4 client instance
 	 */
 	private ga4Client: GA4Client;
 
 	/**
-	 * コンストラクタ
-	 * @param ga4Client GA4クライアントインスタンス
+	 * Constructor
+	 * @param ga4Client GA4 client instance
 	 */
 	constructor(ga4Client: GA4Client) {
 		this.ga4Client = ga4Client;
 	}
 
 	/**
-	 * リソース名
+	 * Resource name
 	 */
 	readonly name = "ga4-property";
 
 	/**
-	 * リソースURI
+	 * Resource URI
 	 */
 	readonly uri = "ga4://property-info";
 
 	/**
-	 * リソースハンドラー
+	 * Resource handler
 	 */
 	async handler(uri: URL) {
 		try {

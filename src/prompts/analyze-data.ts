@@ -2,16 +2,13 @@ import { z } from "zod";
 import type { IMCPPrompt, InferZodParams } from "../types/index.js";
 
 /**
- * データ分析プロンプトクラス
+ * Data analysis prompt class
  */
 export class AnalyzeDataPrompt implements IMCPPrompt {
-	/**
-	 * プロンプト名
-	 */
 	readonly name = "analyze-data";
 
 	/**
-	 * プロンプトスキーマ
+	 * Prompt schema
 	 */
 	readonly schema = {
 		metricType: z
@@ -22,7 +19,7 @@ export class AnalyzeDataPrompt implements IMCPPrompt {
 	} as const;
 
 	/**
-	 * プロンプトハンドラー
+	 * Prompt handler
 	 */
 	handler(args: InferZodParams<typeof this.schema>) {
 		const { metricType, startDate, endDate } = args;

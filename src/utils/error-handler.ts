@@ -1,3 +1,8 @@
+/**
+ * Handle errors and return a structured error message and details.
+ * @param error The error to handle.
+ * @returns An object containing the error message and details.
+ */
 export function handleError(error: unknown): {
 	message: string;
 	details?: string;

@@ -1,48 +1,48 @@
 /**
- * GA4フィルター使用方法
+ * How to use GA4 filters
  */
-export const GA4_FILTERS_HELP = `# GA4 フィルター使用法
+export const GA4_FILTERS_HELP = `# How to Use GA4 Filters
 
-MCPツールでGA4データをフィルタリングするには、\`filter\`パラメータを使用します。フィルターは以下の構造で指定できます：
+To filter GA4 data in MCP tools, use the \`filter\` parameter. Filters can be specified in the following structure:
 
-## 基本構造
+## Basic Structure
 
 \`\`\`json
 {
   "dimension": [
     {
-      "name": "ディメンション名",
-      // フィルタータイプ（以下のいずれか1つを使用）
-      "stringEquals": "完全一致する値",
-      "stringContains": "含む値",
-      "stringBeginsWith": "始まる値",
-      "stringEndsWith": "終わる値",
-      "stringRegex": "正規表現",
-      "inList": ["値1", "値2"],
+      "name": "Dimension Name",
+      // Filter Type (use one of the following)
+      "stringEquals": "Exact Match Value",
+      "stringContains": "Contains Value",
+      "stringBeginsWith": "Begins With Value",
+      "stringEndsWith": "Ends With Value",
+      "stringRegex": "Regular Expression",
+      "inList": ["Value1", "Value2"],
       "isEmpty": true,
-      "caseSensitive": false // 大文字小文字を区別するか（オプション、デフォルトはfalse）
+      "caseSensitive": false // Case sensitivity (optional, default is false)
     }
   ],
   "metric": [
     {
-      "name": "メトリック名",
-      // フィルタータイプ（以下のいずれか1つを使用）
-      "equals": 数値,
-      "lessThan": 数値,
-      "lessThanOrEqual": 数値,
-      "greaterThan": 数値,
-      "greaterThanOrEqual": 数値,
-      "between": { "from": 数値, "to": 数値 },
+      "name": "Metric Name",
+      // Filter Type (use one of the following)
+      "equals": Number,
+      "lessThan": Number,
+      "lessThanOrEqual": Number,
+      "greaterThan": Number,
+      "greaterThanOrEqual": Number,
+      "between": { "from": Number, "to": Number },
       "isEmpty": true
     }
   ],
-  "operator": "AND" // または "OR"（オプション、デフォルトは "AND"）
+  "operator": "AND" // or "OR" (optional, default is "AND")
 }
 \`\`\`
 
-## 使用例
+## Examples
 
-### 例1: 特定のページに関するデータのみを取得
+### Example 1: Retrieve data only for a specific page
 
 \`\`\`json
 {
@@ -55,7 +55,7 @@ MCPツールでGA4データをフィルタリングするには、\`filter\`パ�
 }
 \`\`\`
 
-### 例2: 特定のソースからのトラフィックでフィルタリング
+### Example 2: Filter traffic from a specific source
 
 \`\`\`json
 {
@@ -68,7 +68,7 @@ MCPツールでGA4データをフィルタリングするには、\`filter\`パ�
 }
 \`\`\`
 
-### 例3: 複数条件での絞り込み（AND条件）
+### Example 3: Filter with multiple conditions (AND)
 
 \`\`\`json
 {
@@ -86,7 +86,7 @@ MCPツールでGA4データをフィルタリングするには、\`filter\`パ�
 }
 \`\`\`
 
-### 例4: 複数条件での絞り込み（OR条件）
+### Example 4: Filter with multiple conditions (OR)
 
 \`\`\`json
 {
@@ -104,7 +104,7 @@ MCPツールでGA4データをフィルタリングするには、\`filter\`パ�
 }
 \`\`\`
 
-### 例5: 指標値でのフィルタリング
+### Example 5: Filter by metric value
 
 \`\`\`json
 {
@@ -117,7 +117,7 @@ MCPツールでGA4データをフィルタリングするには、\`filter\`パ�
 }
 \`\`\`
 
-### 例6: 複合フィルター（ディメンションと指標の組み合わせ）
+### Example 6: Composite filter (combination of dimensions and metrics)
 
 \`\`\`json
 {
@@ -137,7 +137,7 @@ MCPツールでGA4データをフィルタリングするには、\`filter\`パ�
 }
 \`\`\`
 
-### 例7: 前方一致で検索（URLパスの特定のプレフィックス）
+### Example 7: Search by prefix (specific prefix of URL path)
 
 \`\`\`json
 {
@@ -150,7 +150,7 @@ MCPツールでGA4データをフィルタリングするには、\`filter\`パ�
 }
 \`\`\`
 
-### 例8: 正規表現でフィルタリング
+### Example 8: Filter by regular expression
 
 \`\`\`json
 {

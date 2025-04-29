@@ -2,16 +2,16 @@ import { z } from "zod";
 import type { IMCPPrompt, InferZodParams } from "../types/index.js";
 
 /**
- * ディメンション選択プロンプトクラス
+ * Dimension selection prompt class
  */
 export class SelectDimensionsPrompt implements IMCPPrompt {
 	/**
-	 * プロンプト名
+	 * Prompt name
 	 */
 	readonly name = "select-dimensions";
 
 	/**
-	 * プロンプトスキーマ
+	 * Prompt schema
 	 */
 	readonly schema = {
 		metricType: z
@@ -21,7 +21,7 @@ export class SelectDimensionsPrompt implements IMCPPrompt {
 	} as const;
 
 	/**
-	 * プロンプトハンドラー
+	 * Prompt handler
 	 */
 	handler(args: InferZodParams<typeof this.schema>) {
 		const { metricType, businessGoal } = args;

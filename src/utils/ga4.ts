@@ -2,10 +2,10 @@ import type { google } from "@google-analytics/data/build/protos/protos.js";
 import { z } from "zod";
 
 /**
- * MCP レスポンス用にGA4 APIのレスポンスをフォーマット
- * @param response GA4 APIレスポンス
- * @param limit 返却行数の制限（オプション）
- * @param offset 開始位置（オプション）
+ * Format GA4 API response for MCP response
+ * @param response GA4 API response
+ * @param limit Limit on the number of rows to return (optional)
+ * @param offset Starting position (optional)
  */
 export function formatGAResponse(
 	response: google.analytics.data.v1beta.IRunReportResponse,
@@ -21,7 +21,6 @@ export function formatGAResponse(
 	const metricHeaders =
 		response.metricHeaders?.map((header) => header.name) || [];
 
-	// ページネーションの適用
 	const totalCount = response.rows.length;
 	const paginatedRows = limit
 		? response.rows.slice(offset, offset + limit)
@@ -30,7 +29,7 @@ export function formatGAResponse(
 	const rows = paginatedRows.map((row) => {
 		const result: Record<string, any> = {};
 
-		// ディメンションの処理
+		// Process dimensions
 		if (row.dimensionValues) {
 			row.dimensionValues.forEach((value, index) => {
 				if (dimensionHeaders[index]) {
@@ -39,7 +38,7 @@ export function formatGAResponse(
 			});
 		}
 
-		// メトリクスの処理
+		// Process metrics
 		if (row.metricValues) {
 			row.metricValues.forEach((value, index) => {
 				if (metricHeaders[index]) {
@@ -66,14 +65,14 @@ export function formatGAResponse(
 }
 
 /**
- * 日付形式バリデーション (YYYY-MM-DD)
+ * Date format validation (YYYY-MM-DD)
  */
 export const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
 	message: "Date must be in YYYY-MM-DD format",
 });
 
 /**
- * フィルターの基本となるZodスキーマ
+ * Base Zod schema for filters
  */
 export const filterSchema = z
 	.object({
@@ -116,7 +115,7 @@ export const filterSchema = z
 	.optional();
 
 /**
- * ページネーションパラメータのスキーマ
+ * Schema for pagination parameters
  */
 export const paginationSchema = z.object({
 	limit: z.number().min(1).max(1000).optional().default(50),
@@ -124,7 +123,7 @@ export const paginationSchema = z.object({
 });
 
 /**
- * ページビュークエリのバリデーションスキーマ
+ * Validation schema for page view queries
  */
 export const pageViewsSchema = z.object({
 	startDate: dateSchema,
@@ -136,7 +135,7 @@ export const pageViewsSchema = z.object({
 });
 
 /**
- * アクティブユーザークエリのバリデーションスキーマ
+ * Validation schema for active user queries
  */
 export const activeUsersSchema = z.object({
 	startDate: dateSchema,
@@ -147,7 +146,7 @@ export const activeUsersSchema = z.object({
 });
 
 /**
- * イベントクエリのバリデーションスキーマ
+ * Validation schema for event queries
  */
 export const eventsSchema = z.object({
 	startDate: dateSchema,
@@ -159,7 +158,7 @@ export const eventsSchema = z.object({
 });
 
 /**
- * ユーザー行動クエリのバリデーションスキーマ
+ * Validation schema for user behavior queries
  */
 export const userBehaviorSchema = z.object({
 	startDate: dateSchema,
@@ -170,7 +169,7 @@ export const userBehaviorSchema = z.object({
 });
 
 /**
- * ソースメディアクエリのバリデーションスキーマ
+ * Validation schema for source media queries
  */
 export const sourceMediaSchema = z.object({
 	startDate: dateSchema,

@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 /**
- * GA4 API フィルター定義
- * 参照: https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/FilterExpression
+ * GA4 API filter definition
+ * Reference: https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/FilterExpression
  */
 
 export type FilterExpression = {
@@ -73,8 +73,8 @@ export type BetweenFilter = {
 export type EmptyFilter = Record<string, never>;
 
 /**
- * MCPツール向け簡易フィルター形式のZodスキーマ
- * GA4 APIフィルター構造に変換されます
+ * Zod schema for simple filter format for MCP tools
+ * Converts to GA4 API filter structure
  */
 export const dimensionSchema = z.object({
 	name: z.string(),
@@ -111,13 +111,13 @@ export const simpleFilterSchema = z.object({
 });
 
 /**
- * MCPツール向け簡易フィルター形式
- * GA4 APIフィルター構造に変換されます
+ * Simple filter format for MCP tools
+ * Converts to GA4 API filter structure
  */
 export type SimpleFilter = z.infer<typeof simpleFilterSchema>;
 
 /**
- * SimpleFilterをGA4 API FilterExpressionに変換
+ * Convert SimpleFilter to GA4 API FilterExpression
  */
 export function convertToFilterExpression(
 	filter: SimpleFilter,
@@ -126,7 +126,7 @@ export function convertToFilterExpression(
 		return undefined;
 	}
 
-	// ディメンションフィルターの作成
+	// Create dimension filters
 	const dimensionExpressions: FilterExpression[] = (filter.dimension || []).map(
 		(dim) => {
 			const filterObj: Filter = {
@@ -176,7 +176,7 @@ export function convertToFilterExpression(
 		},
 	);
 
-	// メトリックフィルターの作成
+	// Create metric filters
 	const metricExpressions: FilterExpression[] = (filter.metric || []).map(
 		(met) => {
 			const filterObj: Filter = {
@@ -221,7 +221,7 @@ export function convertToFilterExpression(
 		},
 	);
 
-	// すべての式を結合
+	// Combine all expressions
 	const allExpressions = [...dimensionExpressions, ...metricExpressions];
 
 	if (allExpressions.length === 0) {
@@ -232,7 +232,7 @@ export function convertToFilterExpression(
 		return allExpressions[0];
 	}
 
-	// 複数のフィルターを結合（デフォルトはAND）
+	// Combine multiple filters (default is AND)
 	const operator = filter.operator === "OR" ? "orGroup" : "andGroup";
 	return {
 		[operator]: {
